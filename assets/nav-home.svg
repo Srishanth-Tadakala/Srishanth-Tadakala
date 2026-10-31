@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="86" height="32" viewBox="0 0 86 32">
+  <rect width="86" height="32" rx="16" fill="#00E6A0"/>
+  <path d="M17 12L23 7.5L29 12V22C29 22.55 28.55 23 28 23H18C17.45 23 17 22.55 17 22V12Z" fill="#050B0B" stroke="#050B0B" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M21 23V16H25V23" stroke="#00E6A0" stroke-width="1.5" fill="#00E6A0"/>
+  <text x="34" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="800" fill="#050B0B" letter-spacing="0.5">HOME</text>
+</svg>
