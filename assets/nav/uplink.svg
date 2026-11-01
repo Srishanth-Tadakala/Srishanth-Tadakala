@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="106" height="32" viewBox="0 0 106 32" role="img" aria-labelledby="ttl"><title id="ttl">Uplink section</title><defs></defs><style>@font-face{font-family:'JBMono';src:url(data:font/woff2;base64,d09GMgABAAAAAANgABAAAAAABkwAAAMFAAI2BAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIBwqBmA/U1RBVEwAbBEICoRog20BNgIkAxYLFgAEIAV+ByAMBxuhBFGUD8ZFgi8SbNOyHfyGJAwnF8EFU4M4dFcqBKfcPhGeief/fxzfPve9EZmoJmdFhT6tQXHWhAivjgSlDwW37XgiU/I71bW5zutf5uf8VQHJQbUwgSs09XXVMB88FXuH8fofALZwaoMlDJyTtxYfT3yIHVSF9aAkuuAF3naQSrMDHvAgcJ3TGMRLDVnLGvj27l2C8YASMVIEY823UA5pTgJJh2E7oEastFrNJt+uvwNKGbC91yXy1wjqAawDnMT5uQYaFVCMEaix9MQBwEuLnW0DQ3r2n8p6BGplWbHYCBGjFaYrLFf3x+kjuHGn3sgk0c1WkBH5S15RFwBNVCaDgELDdE0wXXcBTDVZUxbbbKfjHJ5AOgyF2p8w/N0Hr73w3DNPPSzCpSPDTEKMBdMxCQ/xA9BBE1fKgPYIvbXxNMN3ZkTOziztTlM8htvB8LoGaYqgeCTBAJJLAYpHQaqRqqsnG0hIXS7z1tV8bTQSnNFHtlwZDEArh9i9pteTJORkmYlYNy67/aDKNKs1DXWoI4peMP1w3WTqKdCVmqtw3DnQ825D7cEnsf51yg+w9m4T66aURqrO7eUIkzd67tZgvbU2J8VKlfYYSSzo+MT7pO0U9gUSQ4ntpwkzL81vi/M3ea35YDc0q+wEoT19iy+vFFaHzHdlD9K1eHGLYWXoKkj85/al4Y7MDHFnb1ruZvDmJs7IwOIMNd4EMfWPT3SyQywaxWgVEbkzZ+SS7K401KZWZKS3dqdl51wavQyFWtA2kNWEMzKRAj1MTIaQzTfEzzfYd+/TLwTEljcolQ7lpgcOfb/6z+lKM2QZ/lHSWpTQlZ0j7e+X5DXJcotVKjdk+H4SgOG1gtrZ/yceX12ftOuf1No3+PL6/hq+jr+6t3v4f22vP4xUIPwFuy6UcMuniKCk8BUqjcQulAhZVARjrddAjG0jHMBKH6NMJCOF8SYCI5C5wCRk5W852VhbndIb/Ta1R643G00+rl5n9tuZPrXNrBU57WoHFhjuRj/Z/yL2vR8DAAAA) format('woff2');}
+.fu{animation:fu .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}}
+.fi{animation:fi 1.2s ease both}
+@keyframes fi{from{opacity:0}}
+.pulse{animation:pulse 3.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+.blink{animation:blink 1.4s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style><rect x=".75" y=".75" width="104.5" height="30.5" rx="6" fill="#0A1222" stroke="#3FE0FF" stroke-opacity=".6" stroke-width="1.2"/><rect x="12" y="13" width="6" height="6" fill="#F5B942" transform="rotate(45 15 16)"/><text x="26.0" y="20.0" font-family="JBMono, Consolas, 'Courier New', monospace" font-size="10.5" letter-spacing="1.2" fill="#F5B942" >06</text><text x="47.3" y="20.0" font-family="JBMono, Consolas, 'Courier New', monospace" font-size="10.5" letter-spacing="1.2" fill="#E6F1FF" >UPLINK</text></svg>

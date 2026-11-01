@@ -1,59 +1,167 @@
+"""Validate all generated SVG and source raster assets for Project Marvel.
+
+Checks:
+1. Every generated SVG in assets/{hero,nav,headers,dossier,arsenal,projects,command,archive,uplink,finale}:
+   - Valid XML with <svg> root, explicit width, height, viewBox
+   - Non-empty <title> element for screen-reader accessibility
+   - Zero <script> tags, zero event handlers (onload/onclick), zero javascript: URIs
+   - Zero external http(s):// image/font/import fetches (GitHub camo/<img> blocks them)
+   - Individual SVG budget <= 250 KB; total SVG budget <= 2,048 KB
+2. Every source raster image in assets/source/ (.webp, .png):
+   - Valid image verified via Pillow with non-zero dimensions
+3. Zero orphaned/legacy files directly in assets/ root or legacy subdirectories.
+"""
+from __future__ import annotations
+
 import os
+import re
+import sys
 import xml.etree.ElementTree as ET
 from PIL import Image
 
-def validate_svgs(dirs=["assets", "assets/marvel"]):
-    print("=== Validating SVG Assets ===")
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ASSETS = os.path.join(ROOT, "assets")
+ACTIVE_SVG_DIRS = (
+    "hero",
+    "nav",
+    "headers",
+    "dossier",
+    "arsenal",
+    "projects",
+    "command",
+    "archive",
+    "uplink",
+    "finale",
+)
+MAX_SINGLE_SVG_KB = 250.0
+MAX_TOTAL_SVG_KB = 2048.0
+
+
+def validate_svgs() -> tuple[int, int, float]:
+    print("=== Validating Self-Contained SVG Assets ===")
     errors = 0
-    total = 0
-    for d in dirs:
-        if not os.path.exists(d): continue
-        svg_files = [os.path.join(d, f) for f in os.listdir(d) if f.endswith(".svg")]
-        for path in svg_files:
-            total += 1
-            f = os.path.basename(path)
+    count = 0
+    total_kb = 0.0
+
+    for sub in ACTIVE_SVG_DIRS:
+        folder = os.path.join(ASSETS, sub)
+        if not os.path.isdir(folder):
+            print(f"[FAIL] Missing asset directory: assets/{sub}")
+            errors += 1
+            continue
+        files = sorted(f for f in os.listdir(folder) if f.endswith(".svg"))
+        if not files:
+            print(f"[FAIL] Empty SVG directory: assets/{sub}")
+            errors += 1
+        for fn in files:
+            path = os.path.join(folder, fn)
+            rel = f"assets/{sub}/{fn}"
+            count += 1
+            kb = os.path.getsize(path) / 1024.0
+            total_kb += kb
+            raw = open(path, encoding="utf-8").read()
+
             try:
-                tree = ET.parse(path)
-                root = tree.getroot()
-                if not root.tag.endswith("svg"):
-                    print(f"[FAIL] {path}: Root element is not <svg>")
-                    errors += 1
-                else:
-                    w = root.attrib.get("width", "auto")
-                    h = root.attrib.get("height", "auto")
-                    vb = root.attrib.get("viewBox", "none")
-                    print(f"[PASS] {path} (width={w}, height={h}, viewBox={vb})")
-            except Exception as e:
-                print(f"[FAIL] {path}: XML Parsing Error: {e}")
+                root = ET.fromstring(raw)
+            except Exception as exc:
+                print(f"[FAIL] {rel}: XML parse error: {exc}")
                 errors += 1
+                continue
+
+            if not root.tag.endswith("svg"):
+                print(f"[FAIL] {rel}: root tag is {root.tag}, expected <svg>")
+                errors += 1
+                continue
+
+            w = root.attrib.get("width")
+            h = root.attrib.get("height")
+            vb = root.attrib.get("viewBox")
+            if not (w and h and vb):
+                print(f"[FAIL] {rel}: missing width/height/viewBox ({w}, {h}, {vb})")
+                errors += 1
+
+            titles = [el for el in root.iter() if el.tag.endswith("title") and (el.text or "").strip()]
+            if not titles:
+                print(f"[FAIL] {rel}: missing non-empty <title> accessibility tag")
+                errors += 1
+
+            lowered = raw.lower()
+            for bad in ("<script", "javascript:", "onload=", "onclick=", "onerror=", "@import"):
+                if bad in lowered:
+                    print(f"[FAIL] {rel}: forbidden construct '{bad}' inside SVG")
+                    errors += 1
+
+            # Strip xmlns namespace declarations before checking for external http(s) fetches
+            no_ns = re.sub(r'xmlns(?::\w+)?="https?://[^"]+"', "", raw)
+            if re.search(r"https?://", no_ns):
+                print(f"[FAIL] {rel}: external http(s) URL inside SVG (blocked by GitHub <img> sandbox)")
+                errors += 1
+
+            if kb > MAX_SINGLE_SVG_KB:
+                print(f"[FAIL] {rel}: {kb:.1f} KB exceeds single-SVG budget ({MAX_SINGLE_SVG_KB} KB)")
+                errors += 1
+            else:
+                print(f"[PASS] {rel:<36} {w:>4}x{h:<4}  {kb:6.1f} KB")
+
+    if total_kb > MAX_TOTAL_SVG_KB:
+        print(f"[FAIL] Total SVG payload {total_kb:.1f} KB exceeds {MAX_TOTAL_SVG_KB} KB budget")
+        errors += 1
+    else:
+        print(f"\n[PASS] Total SVG payload: {total_kb:.1f} KB across {count} SVGs (budget <= {MAX_TOTAL_SVG_KB:.0f} KB)")
+    return errors, count, total_kb
+
+
+def validate_sources() -> int:
+    print("\n=== Validating Source Artwork Assets (assets/source/) ===")
+    errors = 0
+    src_dir = os.path.join(ASSETS, "source")
+    if not os.path.isdir(src_dir):
+        print("[FAIL] Missing assets/source directory")
+        return 1
+    for fn in sorted(os.listdir(src_dir)):
+        if not fn.lower().endswith((".webp", ".png", ".jpg", ".jpeg")):
+            print(f"[FAIL] Unexpected file in assets/source: {fn}")
+            errors += 1
+            continue
+        path = os.path.join(src_dir, fn)
+        try:
+            with Image.open(path) as im:
+                im.verify()
+            with Image.open(path) as im:
+                w, h, fmt = im.size[0], im.size[1], im.format
+            kb = os.path.getsize(path) / 1024.0
+            print(f"[PASS] assets/source/{fn:<22} {w:>4}x{h:<4} ({fmt}, {kb:.1f} KB)")
+        except Exception as exc:
+            print(f"[FAIL] assets/source/{fn}: corrupt image: {exc}")
+            errors += 1
     return errors
 
-def validate_images(dirs=["assets", "assets/marvel"]):
-    print("\n=== Validating Image & GIF Assets ===")
+
+def check_orphans() -> int:
+    print("\n=== Checking for Orphaned / Legacy Files in assets/ ===")
+    allowed_dirs = set(ACTIVE_SVG_DIRS) | {"source"}
     errors = 0
-    for d in dirs:
-        if not os.path.exists(d): continue
-        img_files = [os.path.join(d, f) for f in os.listdir(d) if f.endswith((".png", ".jpg", ".webp", ".gif"))]
-        for path in img_files:
-            try:
-                with Image.open(path) as img:
-                    img.verify()
-                with Image.open(path) as img:
-                    w, h = img.size
-                    fmt = img.format
-                    frames = getattr(img, "n_frames", 1)
-                    frames_txt = f", {frames} frames" if frames > 1 else ""
-                    print(f"[PASS] {path}: {w}x{h} ({fmt}{frames_txt}, {os.path.getsize(path) / 1024:.1f} KB)")
-            except Exception as e:
-                print(f"[FAIL] {path}: Corrupt image: {e}")
+    for entry in sorted(os.listdir(ASSETS)):
+        full = os.path.join(ASSETS, entry)
+        if os.path.isdir(full):
+            if entry not in allowed_dirs:
+                print(f"[FAIL] Legacy/orphaned directory present: assets/{entry}/")
                 errors += 1
+        else:
+            print(f"[FAIL] Legacy/orphaned root file present: assets/{entry}")
+            errors += 1
+    if errors == 0:
+        print("[PASS] assets/ tree is spotless (zero orphaned files or legacy folders)")
     return errors
+
 
 if __name__ == "__main__":
-    errs = validate_svgs() + validate_images()
-    if errs == 0:
+    svg_errs, _, _ = validate_svgs()
+    src_errs = validate_sources()
+    orp_errs = check_orphans()
+    total_errs = svg_errs + src_errs + orp_errs
+    if total_errs == 0:
         print("\nALL ASSETS VALIDATED SUCCESSFULLY! (0 errors)")
-        exit(0)
-    else:
-        print(f"\nVALIDATION FAILED WITH {errs} ERRORS")
-        exit(1)
+        sys.exit(0)
+    print(f"\nASSET VALIDATION FAILED WITH {total_errs} ERROR(S)")
+    sys.exit(1)

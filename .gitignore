@@ -1,10 +1,10 @@
-# Cache & OS files
+# Python & OS caches
 __pycache__/
 *.py[cod]
 *$py.class
 .DS_Store
 Thumbs.db
 
-# Local temporary previews
-previews/preview.html
-previews/test.png
+# Local preview renders & temporary HTML
+preview.html
+previews/

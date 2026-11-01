@@ -1,0 +1,111 @@
+{
+  "_comment": "Single source of truth for the profile. Every field lists its evidence source. Add new certifications / internships ONLY when verifiable, then run: python scripts/build_profile.py",
+  "identity": {
+    "name": "Srishanth Tadakala",
+    "login": "Srishanth-Tadakala",
+    "title": "AI/ML Engineer",
+    "roles": ["AI/ML Engineer", "Computer Science Student", "Open Source Contributor"],
+    "tagline": "Turning ideas into intelligent systems that solve real-world problems.",
+    "philosophy": ["Build", "Explore", "Learn", "Share", "Evolve"],
+    "origin": "Chennur, Telangana",
+    "_source": "User-supplied specification + GitHub profile (location: Chennur)"
+  },
+  "education": [
+    {"degree": "B.Tech CSE (AI/ML)", "school": "Marwadi University, Rajkot", "detail": "2nd year \u00b7 lateral entry", "_source": "user specification; QueueLess README (B.Tech CSE AI/ML, Semester 3)"},
+    {"degree": "Diploma in CSE", "school": "Mother Theresa College of Engg. & Tech.", "detail": "CGPA 9.23", "_source": "user specification"}
+  ],
+  "mission": {
+    "current": "Building Sylvie \u2014 a local AI companion with contextual reasoning, intelligent memory and long-term behavioural evolution",
+    "_source": "GitHub bio ('currently working on project Sylvie') + original user-authored README"
+  },
+  "interests": ["AI Agents", "Multi-Agent Systems", "LLM Engineering", "RAG", "Real-Time Voice AI", "AI Memory Architectures", "Computer Vision", "System Architecture"],
+  "learning": ["Advanced AI Agents", "Multi-Modal Systems", "System Design", "3D Web & Creative Interfaces"],
+  "_learning_source": "user-supplied reference design (Currently Learning panel)",
+  "socials": [
+    {"key": "linkedin", "label": "LinkedIn", "url": "https://linkedin.com/in/Srishanth-Tadakala", "handle": "in/Srishanth-Tadakala"},
+    {"key": "github", "label": "GitHub", "url": "https://github.com/Srishanth-Tadakala", "handle": "@Srishanth-Tadakala"},
+    {"key": "gmail", "label": "Email", "url": "mailto:tadakalasrishanth@gmail.com", "handle": "tadakalasrishanth@gmail.com"},
+    {"key": "instagram", "label": "Instagram", "url": "https://instagram.com/multiverse___616", "handle": "@multiverse___616"},
+    {"key": "facebook", "label": "Facebook", "url": "https://facebook.com/siddu_tadakala", "handle": "siddu_tadakala"}
+  ],
+  "_socials_source": "original user-authored README (commit ac17f90)",
+  "projects": [
+    {
+      "id": "friday", "repo": "DTIARS-x-FRIDAY-Automation", "name": "F.R.I.D.A.Y.",
+      "codename": "POLAR DIGITAL TWIN \u00b7 SIH 2026",
+      "summary": "Autonomous digital twin & cognitive operations platform for India's Antarctic research stations.",
+      "facts": ["505-channel twin @ 1 Hz", "10-agent swarm \u00b7 causal graph", "397 + 16 tests passing"],
+      "stack": ["Python", "FastAPI", "React 19", "Groq LLaMA-3.3", "MongoDB"],
+      "status": "SIH 2026 \u00b7 PS SIH26060", "accent": "#3FE0FF",
+      "_source": "repo README + repo description"
+    },
+    {
+      "id": "sylvie", "repo": null, "name": "SYLVIE",
+      "codename": "LOCAL AI COMPANION \u00b7 CLASSIFIED",
+      "summary": "A local AI companion built for natural interaction through contextual reasoning and memory.",
+      "facts": ["Contextual reasoning", "Intelligent memory systems", "Long-term behavioural evolution"],
+      "stack": ["Python", "LangChain", "LLMs", "Memory"],
+      "status": "IN DEVELOPMENT \u00b7 PRIVATE", "accent": "#F5B942",
+      "_source": "GitHub bio + original user-authored README; repository is not public"
+    },
+    {
+      "id": "sales", "repo": "AI-Sales-Quotation-Automation", "name": "AI SALES AGENT",
+      "codename": "MULTI-AGENT QUOTATION PIPELINE",
+      "summary": "Converts inbound B2B emails into approval-ready quotations with multi-agent orchestration.",
+      "facts": ["5 agents: intake \u2192 match \u2192 price \u2192 quote \u2192 send", "Hybrid pgvector product matching", "Mandatory human approval gate"],
+      "stack": ["Python", "FastAPI", "Next.js", "PostgreSQL", "pgvector"],
+      "status": "PHASE 1 \u00b7 PUBLIC", "accent": "#3FE0FF",
+      "_source": "repo README + repo description"
+    },
+    {
+      "id": "aeris", "repo": "A.E.R.I.S", "name": "A.E.R.I.S.",
+      "codename": "GESTURE-DRIVEN SPATIAL INTERFACE",
+      "summary": "Webcam hand gestures manipulate an exploded 3D turbofan engine \u2014 fully in the browser.",
+      "facts": ["One-Euro filtered hand tracking", "9-state interaction FSM", "1,000+ blades in < 35 draw calls"],
+      "stack": ["TypeScript", "React", "Three.js", "MediaPipe"],
+      "status": "PUBLIC", "accent": "#3FE0FF",
+      "_source": "repo README"
+    },
+    {
+      "id": "omniaction", "repo": "Human-Tracking-CV-project", "name": "OMNIACTION AI",
+      "codename": "HUMAN ACTION INTELLIGENCE",
+      "summary": "Real-time human tracking and 15-class action recognition from video streams.",
+      "facts": ["15-class HAR model", "Grad-CAM explainability", "WebSocket live telemetry"],
+      "stack": ["Python", "PyTorch", "OpenCV", "FastAPI", "Vite"],
+      "status": "PUBLIC", "accent": "#3FE0FF",
+      "_source": "repo README"
+    },
+    {
+      "id": "queueless", "repo": "QueueLess-", "name": "QUEUELESS",
+      "codename": "SMART QUEUE \u00b7 WAIT-TIME ENGINE",
+      "summary": "Local-first virtual queue with adaptive waiting-time estimation and cross-tab sync.",
+      "facts": ["Adaptive rolling-average ETA", "BroadcastChannel cross-tab sync", "115 regression tests passing"],
+      "stack": ["JavaScript", "React", "Vite", "node:test"],
+      "status": "ACADEMIC PROTOTYPE", "accent": "#F5B942",
+      "_source": "repo README"
+    }
+  ],
+  "archive_more": [
+    {"repo": "tea-shop-project", "label": "Tea Shop \u2014 full-stack client + admin apps with Socket.IO live menu"},
+    {"repo": "My_Todo_App", "label": "My Todo App \u2014 personal todo application (FastAPI + React/TS)"}
+  ],
+  "achievements": [
+    {"icon": "trophy", "title": "Smart India Hackathon 2026", "detail": "Team F.R.I.D.A.Y. \u00b7 PS SIH26060", "_source": "DTIARS repo description + README badge"},
+    {"icon": "star", "title": "Diploma CGPA 9.23", "detail": "Computer Science & Engineering", "_source": "user specification"},
+    {"icon": "rocket", "title": "Lateral Entry \u00b7 B.Tech AI/ML", "detail": "Marwadi University", "_source": "user specification"},
+    {"icon": "shield", "title": "Test-Driven Builds", "detail": "397+16 (F.R.I.D.A.Y.) \u00b7 115 (QueueLess)", "_source": "repo READMEs"},
+    {"icon": "code", "title": "Open Source", "detail": "LIVE:public_repos public repositories", "_source": "GitHub API (live)"}
+  ],
+  "arsenal": [
+    {"cat": "LANGUAGES", "items": ["python", "typescript", "javascript", "cplusplus"]},
+    {"cat": "AI \u00b7 AGENTIC \u00b7 GENAI", "items": ["langchain", "openai", "ollama", "huggingface", "groq", "pgvector"]},
+    {"cat": "ML \u00b7 DEEP LEARNING", "items": ["pytorch", "tensorflow", "scikitlearn", "numpy", "pandas"]},
+    {"cat": "COMPUTER VISION \u00b7 3D", "items": ["opencv", "mediapipe", "threedotjs"]},
+    {"cat": "FRAMEWORKS", "items": ["fastapi", "react", "nextdotjs", "nodedotjs", "vite", "tailwindcss"]},
+    {"cat": "DATA", "items": ["postgresql", "supabase", "mongodb", "redis", "sqlite"]},
+    {"cat": "CLOUD \u00b7 DEVOPS", "items": ["docker", "githubactions", "googlecloud", "vercel", "render"]},
+    {"cat": "TOOLS", "items": ["git", "github", "linux", "postman", "figma"]}
+  ],
+  "_arsenal_source": "original user-authored README tech stack + technologies evidenced in public repos"
+}
+

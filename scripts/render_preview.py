@@ -1,215 +1,238 @@
+"""Render GitHub-accurate local previews of README.md across viewports & themes.
+
+Emulates GitHub's exact profile README container (.Box > .markdown-body: 848px inner
+width on 1440px desktop, 640px on 1024px laptop, full-width on 390px mobile) in both
+GitHub Dark (#0d1117) and GitHub Light (#ffffff) themes, then slices per-section
+inspection crops into previews/crops/.
+"""
+from __future__ import annotations
+
 import os
-import subprocess
+import pathlib
 import re
+import subprocess
+from PIL import Image
 
-os.makedirs('previews', exist_ok=True)
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PREVIEWS = os.path.join(ROOT, "previews")
+CROPS = os.path.join(PREVIEWS, "crops")
+os.makedirs(CROPS, exist_ok=True)
 
-# Read README.md
-with open('README.md', 'r', encoding='utf-8') as f:
-    md_content = f.read()
 
-# Simple markdown converter for markdown elements in README
-html_body = md_content
+def md_to_github_html(md: str) -> str:
+    """Convert Markdown inside <details> while leaving raw HTML blocks intact."""
+    def render_details(m: re.Match) -> str:
+        inner = m.group(2)
+        blocks = [b.strip() for b in re.split(r"\n{2,}", inner.strip()) if b.strip()]
+        out = []
+        for b in blocks:
+            if b.startswith("- "):
+                items = [re.sub(r"^-\s+", "", ln.strip()) for ln in b.splitlines() if ln.strip().startswith("- ")]
+                items = [_inline(it) for it in items]
+                out.append("<ul>" + "".join(f"<li>{it}</li>" for it in items) + "</ul>")
+            elif b.startswith("<"):
+                out.append(_inline(b))
+            else:
+                lines = [_inline(ln.rstrip()) for ln in b.splitlines()]
+                out.append("<p>" + "<br>\n".join(lines) + "</p>")
+        return f"<details>{m.group(1)}\n" + "\n".join(out) + "\n</details>"
 
-# Convert markdown headers:
-html_body = re.sub(r'^### (.*?)$', r'<h3>\1</h3>', html_body, flags=re.MULTILINE)
-html_body = re.sub(r'^## (.*?)$', r'<h2>\1</h2>', html_body, flags=re.MULTILINE)
-html_body = re.sub(r'^# (.*?)$', r'<h1>\1</h1>', html_body, flags=re.MULTILINE)
+    def _inline(s: str) -> str:
+        s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+        s = re.sub(r"\*(.+?)\*", r"<em>\1</em>", s)
+        s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', s)
+        return s
 
-# Convert blockquotes:
-html_body = re.sub(r'^> \*(.*?)\*$', r'<blockquote><em>\1</em></blockquote>', html_body, flags=re.MULTILINE)
-html_body = re.sub(r'^> (.*?)$', r'<blockquote>\1</blockquote>', html_body, flags=re.MULTILINE)
+    return re.sub(r"<details>\s*(<summary>.*?</summary>)(.*?)</details>", render_details, md, flags=re.S)
 
-# Convert bold and italics
-html_body = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html_body)
-html_body = re.sub(r'\*(.*?)\*', r'<em>\1</em>', html_body)
 
-# Convert markdown links [text](url)
-html_body = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', html_body)
+def make_html(body: str, theme: str = "dark", mobile_width: int | None = None) -> str:
+    dark = theme == "dark"
+    bg = "#0d1117" if dark else "#ffffff"
+    fg = "#e6edf3" if dark else "#1f2328"
+    muted = "#8b949e" if dark else "#656d76"
+    border = "#30363d" if dark else "#d0d7de"
+    link = "#58a6ff" if dark else "#0969da"
+    subtle = "#161b22" if dark else "#f6f8fa"
+    base_uri = pathlib.Path(ROOT).as_uri() + "/"
+    mob_css = f"html, body {{ width: {mobile_width}px; max-width: {mobile_width}px; overflow-x: hidden; }}" if mobile_width else ""
 
-# Convert markdown tables (like Core Engineering Stack)
-def convert_md_table(match):
-    lines = match.group(0).strip().split('\n')
-    if len(lines) < 2:
-        return match.group(0)
-    html = ['<table class="data-table">']
-    # Header
-    headers = [c.strip() for c in lines[0].split('|')[1:-1]]
-    html.append('  <thead><tr>' + ''.join(f'<th>{h}</th>' for h in headers) + '</tr></thead>')
-    html.append('  <tbody>')
-    for line in lines[2:]:
-        cells = [c.strip() for c in line.split('|')[1:-1]]
-        html.append('    <tr>' + ''.join(f'<td>{c}</td>' for c in cells) + '</tr>')
-    html.append('  </tbody></table>')
-    return '\n'.join(html)
-
-table_regex = re.compile(r'(\|.+\|\n\|[-:\s|]+\|\n(?:\|.+\|\n?)+)')
-html_body = table_regex.sub(convert_md_table, html_body)
-
-# Convert unordered list items
-html_body = re.sub(r'^\s*-\s+(.*?)$', r'<li>\1</li>', html_body, flags=re.MULTILINE)
-html_body = re.sub(r'(<li>.*?</li>\n?)+', r'<ul>\g<0></ul>', html_body)
-
-# Convert inline code `code`
-html_body = re.sub(r'`([^`]+)`', r'<code>\1</code>', html_body)
-
-# Convert horizontal rule
-html_body = re.sub(r'^---$', r'<hr/>', html_body, flags=re.MULTILINE)
-
-# Construct full GitHub Dark Mode HTML document
-html_doc = f"""<!DOCTYPE html>
-<html lang="en">
+    return f"""<!DOCTYPE html>
+<html lang="en" data-theme="{theme}">
 <head>
   <meta charset="UTF-8">
-  <title>GitHub Profile Preview - Srishanth Tadakala</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="{base_uri}">
+  <title>GitHub Profile Preview ({theme})</title>
   <style>
+    * {{ box-sizing: border-box; }}
     body {{
-      background-color: #0d1117;
-      color: #e6edf3;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
       margin: 0;
-      padding: 24px;
+      background: {bg};
+      color: {fg};
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      font-size: 16px;
       line-height: 1.5;
     }}
-    .container {{
-      max-width: 1012px;
+    {mob_css}
+    .gh-shell {{
+      max-width: 1280px;
       margin: 0 auto;
-      background-color: #0d1117;
+      padding: 24px 32px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
     }}
-    table {{
-      border-collapse: separate;
-      border-spacing: 0;
-      width: 100%;
+    .gh-sidebar {{
+      width: 296px;
+      flex: 0 0 296px;
+      border: 1px dashed {border};
+      border-radius: 6px;
+      padding: 16px;
+      color: {muted};
+      font-size: 13px;
+      background: {subtle};
     }}
-    table[border="0"] td {{
-      border: none !important;
-      padding: 2px !important;
+    .gh-readme-box {{
+      flex: 1 1 auto;
+      min-width: 0;
+      border: 1px solid {border};
+      border-radius: 6px;
+      padding: 24px;
+      background: {bg};
     }}
-    .data-table {{
-      border-collapse: collapse;
-      margin: 16px 0;
+    .gh-readme-label {{
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 12px;
+      color: {muted};
+      margin-bottom: 12px;
     }}
-    .data-table th, .data-table td {{
-      padding: 8px 12px;
-      border: 1px solid #30363d;
+    @media (max-width: 1100px) {{
+      .gh-sidebar {{ width: 256px; flex-basis: 256px; }}
     }}
-    .data-table th {{
-      background-color: #161b22;
-      color: #00E6A0;
+    @media (max-width: 767px) {{
+      .gh-shell {{ display: block; padding: 8px; }}
+      .gh-sidebar {{ display: none; }}
+      .gh-readme-box {{ padding: 16px; }}
     }}
-    img {{
+    .markdown-body {{ word-wrap: break-word; }}
+    .markdown-body img {{
       max-width: 100%;
       height: auto;
-      display: inline-block;
-      vertical-align: middle;
+      box-sizing: content-box;
+      background-color: transparent;
     }}
-    a {{
-      color: #00C8E8;
-      text-decoration: none;
+    .markdown-body p, .markdown-body ul, .markdown-body details {{
+      margin-top: 0;
+      margin-bottom: 16px;
     }}
-    a:hover {{
-      text-decoration: underline;
-    }}
-    h1, h2, h3, h4 {{
-      color: #00E6A0;
-      border-bottom: 1px solid #21262d;
-      padding-bottom: 6px;
-      margin-top: 24px;
-    }}
-    blockquote {{
-      margin: 0;
-      padding: 0 1em;
-      color: #8b949e;
-      border-left: 0.25em solid #00E6A0;
-    }}
-    code {{
-      background-color: #161b22;
-      color: #00E6A0;
-      padding: 0.2em 0.4em;
-      border-radius: 4px;
-      font-size: 85%;
-    }}
-    hr {{
-      height: 0.25em;
-      padding: 0;
-      margin: 24px 0;
-      background-color: #30363d;
-      border: 0;
-    }}
-    ul {{
-      padding-left: 2em;
-    }}
-    li {{
-      margin-bottom: 4px;
-    }}
-    details {{
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 12px;
-      margin: 16px 0;
-    }}
-    summary {{
-      cursor: pointer;
-      font-weight: 600;
-      color: #00E6A0;
-    }}
+    .markdown-body a {{ color: {link}; text-decoration: none; }}
+    .markdown-body sub {{ font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; bottom: -0.25em; }}
+    .markdown-body details summary {{ cursor: pointer; }}
   </style>
 </head>
 <body>
-  <div class="container">
-    {html_body}
+  <div class="gh-shell">
+    <aside class="gh-sidebar">
+      <strong>Srishanth Tadakala</strong><br>
+      Srishanth-Tadakala<br><br>
+      GitHub profile left sidebar placeholder (296px) to reproduce exact 848px README width.
+    </aside>
+    <main class="gh-readme-box">
+      <div class="gh-readme-label">Srishanth-Tadakala / README.md</div>
+      <article class="markdown-body">
+{body}
+      </article>
+    </main>
   </div>
 </body>
 </html>
 """
 
-preview_file = os.path.abspath('preview.html')
-with open(preview_file, 'w', encoding='utf-8') as f:
-    f.write(html_doc)
-print(f"Generated {preview_file}")
 
-# Try to find Chrome or Edge
-browser_path = None
-candidates = [
-    r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-    r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-    r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"
-]
-for c in candidates:
-    if os.path.exists(c):
-        browser_path = c
-        break
+def find_browser() -> str:
+    for c in (
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+    ):
+        if os.path.exists(c):
+            return c
+    raise RuntimeError("No Chrome/Edge executable found")
 
-if not browser_path:
-    print("Warning: No Chrome or Edge executable found to capture screenshots.")
-else:
-    print(f"Using browser: {browser_path}")
-    viewports = [
-        ("desktop-1440px.png", 1440, 5200),
-        ("laptop-1024px.png", 1024, 5800),
-        ("mobile-390px.png", 420, 7200)
+
+def slice_crops(img_path: str, prefix: str, step: int = 1100):
+    with Image.open(img_path) as im:
+        w, h = im.size
+        # Trim solid trailing bottom whitespace/bg
+        px = im.load()
+        bg = px[w - 2, h - 2]
+        last_y = h - 1
+        while last_y > 400:
+            if any(px[x, last_y] != bg for x in range(0, w, 8)):
+                break
+            last_y -= 2
+        content_h = min(h, last_y + 40)
+        idx = 1
+        y = 0
+        while y < content_h:
+            y2 = min(content_h, y + step)
+            crop_path = os.path.join(CROPS, f"{prefix}-{idx:02d}.png")
+            im.crop((0, y, w, y2)).save(crop_path)
+            y += step - 80
+            idx += 1
+        print(f"  -> sliced {idx - 1} crops (active height {content_h}px)")
+
+
+def main():
+    for f in os.listdir(CROPS):
+        if f.endswith(".png"):
+            os.remove(os.path.join(CROPS, f))
+    md = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
+    body = md_to_github_html(md)
+
+    dark_html = os.path.join(PREVIEWS, "_preview_dark.html")
+    light_html = os.path.join(PREVIEWS, "_preview_light.html")
+    mob_html = os.path.join(PREVIEWS, "_preview_mobile.html")
+    open(dark_html, "w", encoding="utf-8").write(make_html(body, "dark"))
+    open(light_html, "w", encoding="utf-8").write(make_html(body, "light"))
+    open(mob_html, "w", encoding="utf-8").write(make_html(body, "dark", mobile_width=390))
+
+    browser = find_browser()
+    # Note: Windows desktop Chrome enforces a 500px minimum outer window width;
+    # for mobile-390px we render inside a 500px window (<600px so <picture> mobile
+    # sources trigger!) with body constrained to 390px, then crop to 390px.
+    jobs = [
+        ("desktop-1440px.png", dark_html, 1440, 5600, "desktop-dark", None),
+        ("light-1440px.png", light_html, 1440, 5600, "desktop-light", None),
+        ("laptop-1024px.png", dark_html, 1024, 7200, "laptop-dark", None),
+        ("mobile-390px.png", mob_html, 500, 8200, "mobile-dark", 390),
     ]
-    import pathlib
-    file_url = pathlib.Path(preview_file).as_uri()
-    for name, w, h in viewports:
-        out_path = os.path.abspath(os.path.join('previews', name))
+    for out_name, html_file, w, h, crop_prefix, trim_w in jobs:
+        out_path = os.path.abspath(os.path.join(PREVIEWS, out_name))
+        url = pathlib.Path(html_file).as_uri()
         cmd = [
-            browser_path,
+            browser,
             "--headless=new",
             "--disable-gpu",
             "--no-sandbox",
             "--allow-file-access-from-files",
-            f"--window-size={w},{h}",
             "--hide-scrollbars",
+            f"--window-size={w},{h}",
+            "--virtual-time-budget=1500",
             f"--screenshot={out_path}",
-            file_url
+            url,
         ]
-        res = subprocess.run(cmd, capture_output=True, text=True)
+        subprocess.run(cmd, capture_output=True, text=True, check=False)
         if os.path.exists(out_path) and os.path.getsize(out_path) > 0:
-            print(f"[PASS] Captured {name} ({os.path.getsize(out_path) / 1024:.1f} KB)")
+            if trim_w:
+                with Image.open(out_path) as im:
+                    im.crop((0, 0, trim_w, im.size[1])).save(out_path)
+            print(f"[PASS] {out_name} ({os.path.getsize(out_path) / 1024:.1f} KB)")
+            slice_crops(out_path, crop_prefix)
         else:
-            print(f"[FAIL] Could not capture {name}: stderr={res.stderr} stdout={res.stdout}")
+            raise RuntimeError(f"Failed to capture {out_name}")
 
-print("Preview rendering complete!")
 
+if __name__ == "__main__":
+    main()
