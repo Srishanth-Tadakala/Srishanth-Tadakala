@@ -36,7 +36,7 @@
       "summary": "Autonomous digital twin & cognitive operations platform for India's Antarctic research stations.",
       "facts": ["505-channel twin @ 1 Hz", "10-agent swarm \u00b7 causal graph", "397 + 16 tests passing"],
       "stack": ["Python", "FastAPI", "React 19", "Groq LLaMA-3.3", "MongoDB"],
-      "status": "SIH 2026 \u00b7 PS SIH26060", "accent": "#3FE0FF",
+      "status": "SIH 2026 \u00b7 PS SIH26060", "accent": "#00FF88",
       "_source": "repo README + repo description"
     },
     {
@@ -45,7 +45,7 @@
       "summary": "A local AI companion built for natural interaction through contextual reasoning and memory.",
       "facts": ["Contextual reasoning", "Intelligent memory systems", "Long-term behavioural evolution"],
       "stack": ["Python", "LangChain", "LLMs", "Memory"],
-      "status": "IN DEVELOPMENT \u00b7 PRIVATE", "accent": "#F5B942",
+      "status": "IN DEVELOPMENT \u00b7 PRIVATE", "accent": "#7AB38B",
       "_source": "GitHub bio + original user-authored README; repository is not public"
     },
     {
@@ -54,7 +54,7 @@
       "summary": "Converts inbound B2B emails into approval-ready quotations with multi-agent orchestration.",
       "facts": ["5 agents: intake \u2192 match \u2192 price \u2192 quote \u2192 send", "Hybrid pgvector product matching", "Mandatory human approval gate"],
       "stack": ["Python", "FastAPI", "Next.js", "PostgreSQL", "pgvector"],
-      "status": "PHASE 1 \u00b7 PUBLIC", "accent": "#3FE0FF",
+      "status": "PHASE 1 \u00b7 PUBLIC", "accent": "#00FF88",
       "_source": "repo README + repo description"
     },
     {
@@ -63,7 +63,7 @@
       "summary": "Webcam hand gestures manipulate an exploded 3D turbofan engine \u2014 fully in the browser.",
       "facts": ["One-Euro filtered hand tracking", "9-state interaction FSM", "1,000+ blades in < 35 draw calls"],
       "stack": ["TypeScript", "React", "Three.js", "MediaPipe"],
-      "status": "PUBLIC", "accent": "#3FE0FF",
+      "status": "PUBLIC", "accent": "#00FF88",
       "_source": "repo README"
     },
     {
@@ -72,7 +72,7 @@
       "summary": "Real-time human tracking and 15-class action recognition from video streams.",
       "facts": ["15-class HAR model", "Grad-CAM explainability", "WebSocket live telemetry"],
       "stack": ["Python", "PyTorch", "OpenCV", "FastAPI", "Vite"],
-      "status": "PUBLIC", "accent": "#3FE0FF",
+      "status": "PUBLIC", "accent": "#00FF88",
       "_source": "repo README"
     },
     {
@@ -81,7 +81,7 @@
       "summary": "Local-first virtual queue with adaptive waiting-time estimation and cross-tab sync.",
       "facts": ["Adaptive rolling-average ETA", "BroadcastChannel cross-tab sync", "115 regression tests passing"],
       "stack": ["JavaScript", "React", "Vite", "node:test"],
-      "status": "ACADEMIC PROTOTYPE", "accent": "#F5B942",
+      "status": "ACADEMIC PROTOTYPE", "accent": "#7AB38B",
       "_source": "repo README"
     }
   ],

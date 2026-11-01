@@ -136,6 +136,15 @@ def validate_readme(check_urls: bool = False) -> int:
         else:
             print(f"[PASS] Anchor resolved: #{a}")
 
+    # 4b. Zero raw blue HTML text links on the main visual canvas (outside collapsed <details>)
+    visual_canvas = re.sub(r"<details>.*?</details>", "", content, flags=re.S)
+    for a_match in re.finditer(r'<a\b[^>]*href="[^"]+"[^>]*>(.*?)</a>', visual_canvas, flags=re.S):
+        inner = a_match.group(1).strip()
+        if inner and "<img" not in inner:
+            print(f"[FAIL] Raw blue HTML text link on visual canvas (must be SVG pill): {inner[:60]}")
+            errors += 1
+    print("[PASS] Zero raw GitHub-blue text links on main visual canvas")
+
     # 5. <details> Markdown parsing rule: blank line required after </summary>
     det = re.search(r"<details>\s*<summary>.*?</summary>(\r?\n\r?\n)", content, re.S)
     if not det:

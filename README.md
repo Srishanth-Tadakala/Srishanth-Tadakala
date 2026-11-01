@@ -10,12 +10,12 @@
 
 <br><br>
 
-<a href="#dossier"><img src="assets/nav/dossier.svg" height="32" alt="01 Intelligence Dossier"></a>&nbsp;
-<a href="#arsenal"><img src="assets/nav/arsenal.svg" height="32" alt="02 Technology Arsenal"></a>&nbsp;
-<a href="#multiverse"><img src="assets/nav/multiverse.svg" height="32" alt="03 Project Multiverse"></a>&nbsp;
-<a href="#command"><img src="assets/nav/command.svg" height="32" alt="04 Command Center"></a>&nbsp;
-<a href="#archive"><img src="assets/nav/archive.svg" height="32" alt="05 Mission Archive"></a>&nbsp;
-<a href="#uplink"><img src="assets/nav/uplink.svg" height="32" alt="06 Communication Uplink"></a>
+<a href="#dossier"><img src="assets/nav/dossier.svg" height="34" alt="01 Intelligence Dossier"></a>&nbsp;
+<a href="#arsenal"><img src="assets/nav/arsenal.svg" height="34" alt="02 Technology Arsenal"></a>&nbsp;
+<a href="#multiverse"><img src="assets/nav/multiverse.svg" height="34" alt="03 Project Multiverse"></a>&nbsp;
+<a href="#command"><img src="assets/nav/command.svg" height="34" alt="04 Command Center"></a>&nbsp;
+<a href="#archive"><img src="assets/nav/archive.svg" height="34" alt="05 Mission Archive"></a>&nbsp;
+<a href="#uplink"><img src="assets/nav/uplink.svg" height="34" alt="06 Communication Uplink"></a>
 
 </div>
 
@@ -72,8 +72,19 @@
 <a href="https://github.com/Srishanth-Tadakala/QueueLess-"><img src="assets/projects/queueless.svg" width="415" alt="QUEUELESS — Local-first virtual queue with adaptive waiting-time estimation and cross-tab sync. Key facts: Adaptive rolling-average ETA; BroadcastChannel cross-tab sync; 115 regression tests passing. Stack: JavaScript, React, Vite, node:test. Status: ACADEMIC PROTOTYPE."></a>
 </p>
 
-<p align="center"><sub>OPEN A PORTAL &nbsp;▸&nbsp;</sub> <a href="https://github.com/Srishanth-Tadakala/DTIARS-x-FRIDAY-Automation"><b>F.R.I.D.A.Y.</b></a> &nbsp;·&nbsp; <b>SYLVIE</b> <sub>(private · in development)</sub> &nbsp;·&nbsp; <a href="https://github.com/Srishanth-Tadakala/AI-Sales-Quotation-Automation"><b>AI SALES AGENT</b></a> &nbsp;·&nbsp; <a href="https://github.com/Srishanth-Tadakala/A.E.R.I.S"><b>A.E.R.I.S.</b></a> &nbsp;·&nbsp; <a href="https://github.com/Srishanth-Tadakala/Human-Tracking-CV-project"><b>OMNIACTION AI</b></a> &nbsp;·&nbsp; <a href="https://github.com/Srishanth-Tadakala/QueueLess-"><b>QUEUELESS</b></a><br>
-<sub>MORE IN THE ARCHIVE &nbsp;▸&nbsp; <a href="https://github.com/Srishanth-Tadakala/tea-shop-project">Tea Shop</a> &nbsp;·&nbsp; <a href="https://github.com/Srishanth-Tadakala/My_Todo_App">My Todo App</a> &nbsp;·&nbsp; <a href="https://github.com/Srishanth-Tadakala?tab=repositories">all repositories</a></sub></p>
+<p align="center">
+<a href="https://github.com/Srishanth-Tadakala/DTIARS-x-FRIDAY-Automation"><img src="assets/projects/link-friday.svg" height="28" alt="F.R.I.D.A.Y."></a>&nbsp;
+<img src="assets/projects/link-sylvie.svg" height="28" alt="SYLVIE">&nbsp;
+<a href="https://github.com/Srishanth-Tadakala/AI-Sales-Quotation-Automation"><img src="assets/projects/link-sales.svg" height="28" alt="AI SALES AGENT"></a>&nbsp;
+<a href="https://github.com/Srishanth-Tadakala/A.E.R.I.S"><img src="assets/projects/link-aeris.svg" height="28" alt="A.E.R.I.S."></a>&nbsp;
+<a href="https://github.com/Srishanth-Tadakala/Human-Tracking-CV-project"><img src="assets/projects/link-omniaction.svg" height="28" alt="OMNIACTION AI"></a>&nbsp;
+<a href="https://github.com/Srishanth-Tadakala/QueueLess-"><img src="assets/projects/link-queueless.svg" height="28" alt="QUEUELESS"></a>
+</p>
+<p align="center">
+<a href="https://github.com/Srishanth-Tadakala/tea-shop-project"><img src="assets/projects/link-tea-shop-project.svg" height="26" alt="Tea Shop"></a>&nbsp;
+<a href="https://github.com/Srishanth-Tadakala/My_Todo_App"><img src="assets/projects/link-my-todo-app.svg" height="26" alt="My Todo App"></a>&nbsp;
+<a href="https://github.com/Srishanth-Tadakala?tab=repositories"><img src="assets/projects/link-all-repos.svg" height="26" alt="All repositories"></a>
+</p>
 
 <br>
 
@@ -148,12 +159,12 @@
 
 
 <br><br>
-<a href="#top"><img src="assets/finale/top.svg" height="30" alt="Return to top of profile"></a>
+<a href="#top"><img src="assets/finale/top.svg" height="32" alt="Return to top of profile"></a>
 </div>
 
 
 <details>
-<summary><sub>📄 Plain-text dossier (accessible version)</sub></summary>
+<summary><sub>Plain-text dossier (accessible version)</sub></summary>
 
 
 **Srishanth Tadakala** — AI/ML Engineer · Computer Science Student · Open Source Contributor  

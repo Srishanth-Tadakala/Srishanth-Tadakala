@@ -97,6 +97,15 @@ def validate_svgs() -> tuple[int, int, float]:
                 print(f"[FAIL] {rel}: external http(s) URL inside SVG (blocked by GitHub <img> sandbox)")
                 errors += 1
 
+            # Enforce 100% Jet Black / Muted Moss / Neon Emerald color purity (G >= R and G >= B for every hex color)
+            no_refs = re.sub(r"url\(#[^)]+\)", "", re.sub(r"base64,[A-Za-z0-9+/=]+", "", raw))
+            for hx in re.findall(r"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b", no_refs):
+                full_hx = "".join(ch * 2 for ch in hx) if len(hx) == 3 else hx
+                r_c, g_c, b_c = int(full_hx[0:2], 16), int(full_hx[2:4], 16), int(full_hx[4:6], 16)
+                if not (g_c >= r_c and g_c >= b_c):
+                    print(f"[FAIL] {rel}: off-palette non-emerald/moss/black hex color #{hx} (R={r_c}, G={g_c}, B={b_c})")
+                    errors += 1
+
             if kb > MAX_SINGLE_SVG_KB:
                 print(f"[FAIL] {rel}: {kb:.1f} KB exceeds single-SVG budget ({MAX_SINGLE_SVG_KB} KB)")
                 errors += 1
