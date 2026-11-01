@@ -146,9 +146,54 @@ def validate_sources() -> int:
     return errors
 
 
+def validate_gifs() -> int:
+    print("\n=== Validating Animated Miss Minutes TVA GIF Modules (assets/tva/) ===")
+    errors = 0
+    tva_dir = os.path.join(ASSETS, "tva")
+    if not os.path.isdir(tva_dir):
+        print("[FAIL] Missing assets/tva directory")
+        return 1
+    files = sorted(f for f in os.listdir(tva_dir) if f.endswith(".gif"))
+    if len(files) < 8:
+        print(f"[FAIL] Expected 8 Miss Minutes GIFs (4 desktop + 4 mobile), found {len(files)}")
+        errors += 1
+    total_kb = 0.0
+    for fn in files:
+        path = os.path.join(tva_dir, fn)
+        kb = os.path.getsize(path) / 1024.0
+        total_kb += kb
+        try:
+            with Image.open(path) as im:
+                w, h = im.size
+                nf = getattr(im, "n_frames", 1)
+                anim = getattr(im, "is_animated", False)
+                if not anim or nf < 60:
+                    print(f"[FAIL] assets/tva/{fn}: expected >=60 animated frames, got is_animated={anim}, n_frames={nf}")
+                    errors += 1
+                # Verify 100% green-dominant Jet Black / Muted Moss / Neon Emerald color purity across sampled frames
+                for f_idx in (0, nf // 3, (2 * nf) // 3):
+                    im.seek(f_idx)
+                    rgb = im.convert("RGB")
+                    for _cnt, (r_c, g_c, b_c) in (rgb.getcolors(maxcolors=65536) or []):
+                        if not (g_c >= r_c and g_c >= b_c):
+                            print(f"[FAIL] assets/tva/{fn}: off-palette pixel ({r_c},{g_c},{b_c}) at frame {f_idx}")
+                            errors += 1
+                            break
+                if kb > 1024.0:
+                    print(f"[FAIL] assets/tva/{fn}: {kb:.1f} KB exceeds 1024 KB single-GIF budget")
+                    errors += 1
+                else:
+                    print(f"[PASS] assets/tva/{fn:<34} {w:>4}x{h:<4}  {nf:>3}f  {kb:6.1f} KB")
+        except Exception as exc:
+            print(f"[FAIL] assets/tva/{fn}: corrupt GIF: {exc}")
+            errors += 1
+    print(f"[PASS] Total TVA GIF payload: {total_kb:.1f} KB across {len(files)} animated GIFs")
+    return errors
+
+
 def check_orphans() -> int:
     print("\n=== Checking for Orphaned / Legacy Files in assets/ ===")
-    allowed_dirs = set(ACTIVE_SVG_DIRS) | {"source"}
+    allowed_dirs = set(ACTIVE_SVG_DIRS) | {"source", "tva"}
     errors = 0
     for entry in sorted(os.listdir(ASSETS)):
         full = os.path.join(ASSETS, entry)
@@ -166,9 +211,10 @@ def check_orphans() -> int:
 
 if __name__ == "__main__":
     svg_errs, _, _ = validate_svgs()
+    gif_errs = validate_gifs()
     src_errs = validate_sources()
     orp_errs = check_orphans()
-    total_errs = svg_errs + src_errs + orp_errs
+    total_errs = svg_errs + gif_errs + src_errs + orp_errs
     if total_errs == 0:
         print("\nALL ASSETS VALIDATED SUCCESSFULLY! (0 errors)")
         sys.exit(0)

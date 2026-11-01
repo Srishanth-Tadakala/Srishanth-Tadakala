@@ -24,6 +24,7 @@ import math
 import os
 import random
 import re
+import sys
 from collections import defaultdict
 from xml.sax.saxutils import escape as _esc
 
@@ -31,6 +32,8 @@ from fontTools import subset
 from fontTools.ttLib import TTFont
 from fontTools.varLib import instancer
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
+
+import miss_minutes
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = json.load(open(os.path.join(ROOT, "data", "profile.json"), encoding="utf-8"))
@@ -593,6 +596,73 @@ def sweep(s: Svg, x, y, w, h, dur=6, op=.20, band=96):
     )
 
 
+def svg_miss_minutes(s: Svg, cx: float, cy: float, scale: float = 1.0, wave_left: bool = False) -> str:
+    """SMIL-animated holographic Miss Minutes vector cameo (hovering, clock hands ticking, waving & blinking)."""
+    gsm = s.glow_sm()
+    fg, ag = s.uid("mf"), s.uid("ma")
+    s.defs.append(
+        f'<radialGradient id="{fg}" cx="38%" cy="32%" r="68%">'
+        f'<stop offset="0" stop-color="#40FA9C"/><stop offset=".6" stop-color="#1CE882"/>'
+        f'<stop offset="1" stop-color="#0C9E56"/></radialGradient>'
+        f'<radialGradient id="{ag}"><stop offset="0" stop-color="{EMERALD}" stop-opacity=".42"/>'
+        f'<stop offset="1" stop-color="{EMERALD}" stop-opacity="0"/></radialGradient>'
+    )
+    ticks = "".join(
+        f'<line x1="0" y1="{-15.2 if i % 3 == 0 else -16.0}" x2="0" y2="-18.2" '
+        f'stroke="#020B06" stroke-width="{1.6 if i % 3 == 0 else 1.0}" transform="rotate({i * 30})"/>'
+        for i in range(12)
+    )
+    ws = -1 if wave_left else 1
+    rs = -ws
+    wave_arm = (
+        f'<g><animateTransform attributeName="transform" type="rotate" '
+        f'values="{-14 * ws} {18 * ws} 2;{18 * ws} {18 * ws} 2;{-14 * ws} {18 * ws} 2" dur="1.35s" repeatCount="indefinite"/>'
+        f'<path d="M{18 * ws},2 Q{26 * ws},{-4} {28 * ws},{-14}" fill="none" stroke="{EMERALD}" stroke-width="3.6" stroke-linecap="round"/>'
+        f'<path d="M{18 * ws},2 Q{26 * ws},{-4} {28 * ws},{-14}" fill="none" stroke="#020B06" stroke-width="1.8" stroke-linecap="round"/>'
+        f'<circle cx="{28.5 * ws}" cy="-15.5" r="4.2" fill="#E8FFF4" stroke="#020B06" stroke-width="1.1"/>'
+        f'<circle cx="{26.0 * ws}" cy="-19.0" r="1.6" fill="#E8FFF4" stroke="#020B06" stroke-width=".8"/>'
+        f'<circle cx="{28.8 * ws}" cy="-19.8" r="1.6" fill="#E8FFF4" stroke="#020B06" stroke-width=".8"/>'
+        f'<circle cx="{31.4 * ws}" cy="-18.6" r="1.5" fill="#E8FFF4" stroke="#020B06" stroke-width=".8"/></g>'
+    )
+    rest_arm = (
+        f'<path d="M{18 * rs},3 Q{25 * rs},9 {23 * rs},16" fill="none" stroke="{EMERALD}" stroke-width="3.4" stroke-linecap="round"/>'
+        f'<path d="M{18 * rs},3 Q{25 * rs},9 {23 * rs},16" fill="none" stroke="#020B06" stroke-width="1.7" stroke-linecap="round"/>'
+        f'<circle cx="{22.8 * rs}" cy="17.2" r="3.6" fill="#E8FFF4" stroke="#020B06" stroke-width="1.0"/>'
+    )
+    legs = (
+        f'<path d="M-7,18 Q-10,25 -8,31 M7,18 Q10,25 8,31" fill="none" stroke="{EMERALD}" stroke-width="3.4" stroke-linecap="round"/>'
+        f'<path d="M-7,18 Q-10,25 -8,31 M7,18 Q10,25 8,31" fill="none" stroke="#020B06" stroke-width="1.7" stroke-linecap="round"/>'
+        f'<ellipse cx="-9.5" cy="32.5" rx="5.2" ry="2.6" fill="#0B3820" stroke="{EMERALD}" stroke-width="1.1"/>'
+        f'<ellipse cx="9.5" cy="32.5" rx="5.2" ry="2.6" fill="#0B3820" stroke="{EMERALD}" stroke-width="1.1"/>'
+    )
+    eyes = ""
+    for ex in (-4.8, 4.8):
+        eyes += (
+            f'<ellipse cx="{ex}" cy="-3.6" rx="3.5" ry="5.5" fill="#E8FFF4" stroke="#020B06" stroke-width="1.1"/>'
+            f'<ellipse cx="{ex + 0.5 * ws}" cy="-3.3" rx="2.1" ry="3.5" fill="#020B06"/>'
+            f'<polygon points="{ex + 0.5 * ws},-3.4 {ex + 2.8},-5.6 {ex + 2.8},-3.1" fill="#E8FFF4"/>'
+            f'<path d="M{ex - 3.0},-10.4 Q{ex},-12.5 {ex + 3.0},-10.2" fill="none" stroke="#020B06" stroke-width="1.3" stroke-linecap="round"/>'
+            f'<ellipse cx="{ex}" cy="-3.6" rx="3.6" ry="5.6" fill="#1CE882" stroke="#020B06" stroke-width="1.0" opacity="0">'
+            f'<animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;.88;.91;.95;1" dur="3.8s" repeatCount="indefinite"/></ellipse>'
+        )
+    return (
+        f'<g transform="translate({cx:.1f} {cy:.1f}) scale({scale:.3f})">'
+        f'<g><animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="2.6s" repeatCount="indefinite"/>'
+        f'<circle r="33" fill="url(#{ag})"/>'
+        f'{legs}{rest_arm}'
+        f'<circle r="21" fill="#020B06" stroke="{EMERALD}" stroke-width="1.8" filter="url(#{gsm})"/>'
+        f'<circle r="19.2" fill="url(#{fg})" stroke="{MINT}" stroke-width=".9"/>'
+        f'{ticks}'
+        f'<g opacity=".55"><g>{spin(18)}<line x1="0" y1="0" x2="0" y2="-9.5" stroke="#05381E" stroke-width="1.6" stroke-linecap="round"/></g>'
+        f'<g>{spin(4.5)}<line x1="0" y1="0" x2="0" y2="-13.8" stroke="#05381E" stroke-width="1.2" stroke-linecap="round"/></g></g>'
+        f'{eyes}'
+        f'<circle cx="0" cy="1.2" r="1.6" fill="#020B06"/>'
+        f'<path d="M-7.8,5.6 C-4.0,11.8 4.0,11.8 7.8,5.6" fill="none" stroke="#020B06" stroke-width="1.8" stroke-linecap="round"/>'
+        f'<path d="M-9.2,4.6 A2,2 0 0 0 -8.2,7.2 M9.2,4.6 A2,2 0 0 1 8.2,7.2" fill="none" stroke="#020B06" stroke-width="1.1"/>'
+        f'{wave_arm}</g></g>'
+    )
+
+
 # ───────────────────────────── MODULE 01 · HERO ─────────────────────────────
 HERO_SRC = (1376, 768)
 REACTOR_SRC = (905, 365)
@@ -729,9 +799,12 @@ def hero(mobile=False):
     )
     if not mobile:
         s.add(
+            svg_miss_minutes(s, W - 56, by - 58, scale=0.76, wave_left=True),
             f'<circle cx="{W - 224}" cy="{by - 3.5}" r="3.5" fill="{MINT}" class="blink" filter="url(#{gsm})"/>',
             s.text(W - 26, by, "CURRENT MISSION ▸ SYLVIE", "mono", 10, MINT, "end", ls=1.2),
         )
+    else:
+        s.add(svg_miss_minutes(s, W - 46, by - 52, scale=0.66, wave_left=True))
     return s
 
 
@@ -1022,6 +1095,9 @@ def project_card(p, idx=0):
         f'<circle cx="{W - 22 - sw_ + 12:.0f}" cy="{IH - 24}" r="3.2" fill="{acc}" class="blink" filter="url(#{gsm})"/>',
         s.text(W - 22 - sw_ + 21, IH - 20.5, st, "mono", 9, acc, ls=.8),
     )
+    if p["id"] == "sylvie":
+        # TVA Nexus Watch Miss Minutes hologram cameo guarding the Sylvie AI project card
+        s.add(svg_miss_minutes(s, 54, IH - 46, scale=0.64, wave_left=False))
     y = IH + 33
     s.add(
         s.text(20, y, p["name"], "display", 20, EMERALD, ls=2, extra=f'opacity=".26" filter="url(#{glg})"'),
@@ -1475,6 +1551,20 @@ def build():
     out["fin"] = write("assets/finale/finale.svg", finale())
     out["fin_m"] = write("assets/finale/finale-mobile.svg", finale(True))
     out["top"] = write("assets/finale/top.svg", top_pill())
+
+    # Build or verify all 8 autonomous Miss Minutes TVA GIF modules
+    gif_keys = ("welcome", "inspector", "operator", "uplink")
+    need_gifs = "--skip-gifs" not in sys.argv
+    if not need_gifs:
+        for gk in gif_keys:
+            if not os.path.isfile(os.path.join(ROOT, f"assets/tva/miss-minutes-{gk}.gif")):
+                need_gifs = True
+    if need_gifs:
+        miss_minutes.build_all_gifs()
+    for gk in gif_keys:
+        out[f"mm_{gk}"] = f"assets/tva/miss-minutes-{gk}.gif"
+        out[f"mm_{gk}_m"] = f"assets/tva/miss-minutes-{gk}-mobile.gif"
+
     readme(out)
 
 
@@ -1493,6 +1583,12 @@ def readme(o):
     A(picture(o["hero"], o["hero_m"], f"{idn['name']} — {idn['title']} · {' · '.join(idn['roles'][1:])}. “{idn['tagline']}”"))
     A("\n<br><br>\n")
     A("&nbsp;\n".join(f'<a href="#{k}"><img src="{o["nav_" + k]}" height="34" alt="{n} {t.title()}"></a>' for k, n, t, _ in MODULES))
+    A("\n<br><br>\n")
+    A(picture(
+        o["mm_welcome"],
+        o["mm_welcome_m"],
+        "TVA Autonomous Intelligence Miss Minutes — Timedoor arrival, greeting wave, and Level 616 engineer biometric scan",
+    ))
     A("\n</div>\n\n<br>\n")
     mods = {m[0]: m for m in MODULES}
 
@@ -1518,6 +1614,11 @@ def readme(o):
     # 02 arsenal
     A(header_block(*mods["arsenal"], o))
     A(tiles((o["a1"], alt_of(o["a1"]), None), (o["a2"], alt_of(o["a2"]), None)))
+    A('<p align="center">\n' + picture(
+        o["mm_inspector"],
+        o["mm_inspector_m"],
+        "Miss Minutes Sacred Timeline Detective — dropping from ceiling Timedoor to audit 6 flagship AI project branches and Sylvie Nexus memory",
+    ) + "\n</p>\n")
     A("<br>\n")
     # 03 multiverse
     A(header_block(*mods["multiverse"], o))
@@ -1545,6 +1646,11 @@ def readme(o):
     # 04 command
     A(header_block(*mods["command"], o))
     A('<p align="center">\n' + picture(o["heat"], o["heat_m"], alt_of(o["heat"])) + "\n</p>\n")
+    A('<p align="center">\n' + picture(
+        o["mm_operator"],
+        o["mm_operator_m"],
+        "Miss Minutes Temporal Loom Telemetry Operator — high-speed holographic code typing and reactor streak boost",
+    ) + "\n</p>\n")
     A(tiles((o["tele"], alt_of(o["tele"]), None), (o["streak"], alt_of(o["streak"]), None),
             (o["lang"], alt_of(o["lang"]), None), (o["log"], alt_of(o["log"]), None)))
     A("<br>\n")
@@ -1554,6 +1660,11 @@ def readme(o):
     A("<br>\n")
     # 06 uplink
     A(header_block(*mods["uplink"], o))
+    A('<p align="center">\n' + picture(
+        o["mm_uplink"],
+        o["mm_uplink_m"],
+        "Miss Minutes Multiverse Uplink Dispatcher — zero-gravity patrol conjuring 5 verified communication channels and 360 celebratory spin",
+    ) + "\n</p>\n")
     soc_tags = [
         f'<a href="{s_["url"]}"><img src="{o["s_" + s_["key"]]}" width="270" alt="{esc(s_["label"])}: {esc(s_["handle"])}"></a>'
         for s_ in P["socials"]

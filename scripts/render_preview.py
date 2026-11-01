@@ -203,10 +203,10 @@ def main():
     # for mobile-390px we render inside a 500px window (<600px so <picture> mobile
     # sources trigger!) with body constrained to 390px, then crop to 390px.
     jobs = [
-        ("desktop-1440px.png", dark_html, 1440, 5600, "desktop-dark", None),
-        ("light-1440px.png", light_html, 1440, 5600, "desktop-light", None),
-        ("laptop-1024px.png", dark_html, 1024, 7200, "laptop-dark", None),
-        ("mobile-390px.png", mob_html, 500, 8200, "mobile-dark", 390),
+        ("desktop-1440px.png", dark_html, 1440, 6600, "desktop-dark", None),
+        ("light-1440px.png", light_html, 1440, 6600, "desktop-light", None),
+        ("laptop-1024px.png", dark_html, 1024, 8200, "laptop-dark", None),
+        ("mobile-390px.png", mob_html, 500, 9600, "mobile-dark", 390),
     ]
     for out_name, html_file, w, h, crop_prefix, trim_w in jobs:
         out_path = os.path.abspath(os.path.join(PREVIEWS, out_name))

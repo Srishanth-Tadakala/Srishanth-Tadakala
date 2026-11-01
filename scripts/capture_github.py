@@ -15,7 +15,7 @@ chrome = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 
 # Note: Win32 desktop Chrome enforces a 500px minimum outer window width; 500px is below
 # both GitHub's 768px mobile layout breakpoint and our <picture> 600px mobile art-direction breakpoint.
-for name, w, h in [("github-desktop.png", 1440, 7200), ("github-mobile.png", 500, 9500)]:
+for name, w, h in [("github-desktop.png", 1440, 8200), ("github-mobile.png", 500, 10800)]:
     out = os.path.join(outdir, name)
     args = [
         chrome,

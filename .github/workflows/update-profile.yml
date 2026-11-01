@@ -36,7 +36,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python scripts/fetch_telemetry.py
-          python scripts/build_profile.py
+          python scripts/build_profile.py --skip-gifs
 
       - name: Validate Self-Contained SVG & Source Assets
         run: python scripts/validate_assets.py

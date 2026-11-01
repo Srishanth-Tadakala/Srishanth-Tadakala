@@ -92,30 +92,30 @@ def validate_readme(check_urls: bool = False) -> int:
             if not m.startswith(("http://", "https://", "data:")):
                 local_refs.add(m.split("?")[0])
 
-    print(f"\nVerifying {len(local_refs)} referenced local SVG assets...")
+    print(f"\nVerifying {len(local_refs)} referenced local SVG & GIF assets...")
     for ref in sorted(local_refs):
         disk = os.path.join(ROOT, ref.replace("/", os.sep))
         if not os.path.isfile(disk) or os.path.getsize(disk) == 0:
             print(f"[FAIL] Missing or empty asset referenced in README.md: {ref}")
             errors += 1
 
-    # Ensure every generated SVG in assets/ is actually used in README.md
-    on_disk_svgs = set()
+    # Ensure every generated SVG & GIF in assets/ is actually used in README.md
+    on_disk_assets = set()
     assets_root = os.path.join(ROOT, "assets")
     for dp, _, fns in os.walk(assets_root):
         rel_dir = os.path.relpath(dp, ROOT).replace(os.sep, "/")
         if rel_dir == "assets/source":
             continue
         for fn in fns:
-            if fn.endswith(".svg"):
-                on_disk_svgs.add(f"{rel_dir}/{fn}")
-    unused = on_disk_svgs - local_refs
+            if fn.endswith((".svg", ".gif")):
+                on_disk_assets.add(f"{rel_dir}/{fn}")
+    unused = on_disk_assets - local_refs
     if unused:
         for u in sorted(unused):
-            print(f"[FAIL] Unreferenced SVG on disk: {u}")
+            print(f"[FAIL] Unreferenced visual asset on disk: {u}")
             errors += 1
     else:
-        print(f"[PASS] All {len(local_refs)} referenced SVGs exist and match 1:1 with generated SVGs")
+        print(f"[PASS] All {len(local_refs)} referenced SVGs & GIFs exist and match 1:1 with generated assets")
 
     # 3. Every <img> must carry non-empty alt text
     imgs = re.findall(r"<img\b[^>]*>", content)

@@ -17,6 +17,13 @@
 <a href="#archive"><img src="assets/nav/archive.svg" height="34" alt="05 Mission Archive"></a>&nbsp;
 <a href="#uplink"><img src="assets/nav/uplink.svg" height="34" alt="06 Communication Uplink"></a>
 
+<br><br>
+
+<picture>
+  <source media="(max-width: 600px)" srcset="assets/tva/miss-minutes-welcome-mobile.gif">
+  <img src="assets/tva/miss-minutes-welcome.gif" width="100%" alt="TVA Autonomous Intelligence Miss Minutes — Timedoor arrival, greeting wave, and Level 616 engineer biometric scan">
+</picture>
+
 </div>
 
 <br>
@@ -47,6 +54,13 @@
 <p align="center">
 <img src="assets/arsenal/core.svg" width="415" alt="ARSENAL // CORE SYSTEMS: Python, TypeScript, JavaScript, C++, LangChain, OpenAI API, Ollama, Hugging Face, Groq LPU, pgvector, PyTorch, TensorFlow, scikit-learn, NumPy, pandas, OpenCV, MediaPipe, Three.js">&nbsp;
 <img src="assets/arsenal/support.svg" width="415" alt="ARSENAL // SUPPORT SYSTEMS: FastAPI, React, Next.js, Node.js, Vite, Tailwind, PostgreSQL, Supabase, MongoDB, Redis, SQLite, Docker, Actions, Google Cloud, Vercel, Render, Git, GitHub, Linux, Postman, Figma">
+</p>
+
+<p align="center">
+<picture>
+  <source media="(max-width: 600px)" srcset="assets/tva/miss-minutes-inspector-mobile.gif">
+  <img src="assets/tva/miss-minutes-inspector.gif" width="100%" alt="Miss Minutes Sacred Timeline Detective — dropping from ceiling Timedoor to audit 6 flagship AI project branches and Sylvie Nexus memory">
+</picture>
 </p>
 
 <br>
@@ -104,6 +118,13 @@
 </p>
 
 <p align="center">
+<picture>
+  <source media="(max-width: 600px)" srcset="assets/tva/miss-minutes-operator-mobile.gif">
+  <img src="assets/tva/miss-minutes-operator.gif" width="100%" alt="Miss Minutes Temporal Loom Telemetry Operator — high-speed holographic code typing and reactor streak boost">
+</picture>
+</p>
+
+<p align="center">
 <img src="assets/command/telemetry.svg" width="415" alt="Telemetry: public repos 9, stars earned 4, followers 1, contrib · 12mo 400, languages 9, last push OCT 30 (synced 2026-11-01).">&nbsp;
 <img src="assets/command/streak.svg" width="415" alt="Streak reactor: current streak 4 days, longest streak 15 days, 37 active days in the last year, peak day 42 contributions on 2026-09-26.">
 </p>
@@ -136,6 +157,13 @@
 <picture>
   <source media="(max-width: 600px)" srcset="assets/headers/uplink-mobile.svg">
   <img src="assets/headers/uplink.svg" width="100%" alt="06 · COMMUNICATION UPLINK">
+</picture>
+</p>
+
+<p align="center">
+<picture>
+  <source media="(max-width: 600px)" srcset="assets/tva/miss-minutes-uplink-mobile.gif">
+  <img src="assets/tva/miss-minutes-uplink.gif" width="100%" alt="Miss Minutes Multiverse Uplink Dispatcher — zero-gravity patrol conjuring 5 verified communication channels and 360 celebratory spin">
 </picture>
 </p>
 
