@@ -2,53 +2,51 @@ import os
 import xml.etree.ElementTree as ET
 from PIL import Image
 
-def validate_svgs(asset_dir="assets"):
+def validate_svgs(dirs=["assets", "assets/marvel"]):
     print("=== Validating SVG Assets ===")
     errors = 0
-    svg_files = [f for f in os.listdir(asset_dir) if f.endswith(".svg")]
-    if not svg_files:
-        print("Error: No SVG files found in assets directory!")
-        return 1
-    
-    for f in svg_files:
-        path = os.path.join(asset_dir, f)
-        try:
-            tree = ET.parse(path)
-            root = tree.getroot()
-            if not root.tag.endswith("svg"):
-                print(f"[FAIL] {f}: Root element is not <svg>")
+    total = 0
+    for d in dirs:
+        if not os.path.exists(d): continue
+        svg_files = [os.path.join(d, f) for f in os.listdir(d) if f.endswith(".svg")]
+        for path in svg_files:
+            total += 1
+            f = os.path.basename(path)
+            try:
+                tree = ET.parse(path)
+                root = tree.getroot()
+                if not root.tag.endswith("svg"):
+                    print(f"[FAIL] {path}: Root element is not <svg>")
+                    errors += 1
+                else:
+                    w = root.attrib.get("width", "auto")
+                    h = root.attrib.get("height", "auto")
+                    vb = root.attrib.get("viewBox", "none")
+                    print(f"[PASS] {path} (width={w}, height={h}, viewBox={vb})")
+            except Exception as e:
+                print(f"[FAIL] {path}: XML Parsing Error: {e}")
                 errors += 1
-            else:
-                w = root.attrib.get("width", "auto")
-                h = root.attrib.get("height", "auto")
-                vb = root.attrib.get("viewBox", "none")
-                print(f"[PASS] {f} (width={w}, height={h}, viewBox={vb})")
-        except Exception as e:
-            print(f"[FAIL] {f}: XML Parsing Error: {e}")
-            errors += 1
     return errors
 
-def validate_images(asset_dir="assets"):
-    print("\n=== Validating Image Assets ===")
+def validate_images(dirs=["assets", "assets/marvel"]):
+    print("\n=== Validating Image & GIF Assets ===")
     errors = 0
-    img_files = [f for f in os.listdir(asset_dir) if f.endswith((".png", ".jpg", ".webp"))]
-    if not img_files:
-        print("Error: No image files found in assets directory!")
-        return 1
-
-    for f in img_files:
-        path = os.path.join(asset_dir, f)
-        try:
-            with Image.open(path) as img:
-                img.verify()
-            # re-open to check dimensions
-            with Image.open(path) as img:
-                w, h = img.size
-                fmt = img.format
-                print(f"[PASS] {f}: {w}x{h} ({fmt}, {os.path.getsize(path) / 1024:.1f} KB)")
-        except Exception as e:
-            print(f"[FAIL] {f}: Corrupt image: {e}")
-            errors += 1
+    for d in dirs:
+        if not os.path.exists(d): continue
+        img_files = [os.path.join(d, f) for f in os.listdir(d) if f.endswith((".png", ".jpg", ".webp", ".gif"))]
+        for path in img_files:
+            try:
+                with Image.open(path) as img:
+                    img.verify()
+                with Image.open(path) as img:
+                    w, h = img.size
+                    fmt = img.format
+                    frames = getattr(img, "n_frames", 1)
+                    frames_txt = f", {frames} frames" if frames > 1 else ""
+                    print(f"[PASS] {path}: {w}x{h} ({fmt}{frames_txt}, {os.path.getsize(path) / 1024:.1f} KB)")
+            except Exception as e:
+                print(f"[FAIL] {path}: Corrupt image: {e}")
+                errors += 1
     return errors
 
 if __name__ == "__main__":
@@ -59,4 +57,3 @@ if __name__ == "__main__":
     else:
         print(f"\nVALIDATION FAILED WITH {errs} ERRORS")
         exit(1)
-

@@ -164,7 +164,7 @@ html_doc = f"""<!DOCTYPE html>
 </html>
 """
 
-preview_file = os.path.abspath('previews/preview.html')
+preview_file = os.path.abspath('preview.html')
 with open(preview_file, 'w', encoding='utf-8') as f:
     f.write(html_doc)
 print(f"Generated {preview_file}")
@@ -186,26 +186,30 @@ if not browser_path:
 else:
     print(f"Using browser: {browser_path}")
     viewports = [
-        ("desktop-1440px.png", 1440, 2200),
-        ("laptop-1024px.png", 1024, 2400),
-        ("mobile-390px.png", 390, 3200)
+        ("desktop-1440px.png", 1440, 5200),
+        ("laptop-1024px.png", 1024, 5800),
+        ("mobile-390px.png", 420, 7200)
     ]
+    import pathlib
+    file_url = pathlib.Path(preview_file).as_uri()
     for name, w, h in viewports:
         out_path = os.path.abspath(os.path.join('previews', name))
         cmd = [
             browser_path,
             "--headless=new",
             "--disable-gpu",
+            "--no-sandbox",
+            "--allow-file-access-from-files",
             f"--window-size={w},{h}",
             "--hide-scrollbars",
             f"--screenshot={out_path}",
-            f"file:///{preview_file}"
+            file_url
         ]
         res = subprocess.run(cmd, capture_output=True, text=True)
         if os.path.exists(out_path) and os.path.getsize(out_path) > 0:
             print(f"[PASS] Captured {name} ({os.path.getsize(out_path) / 1024:.1f} KB)")
         else:
-            print(f"[FAIL] Could not capture {name}: {res.stderr}")
+            print(f"[FAIL] Could not capture {name}: stderr={res.stderr} stdout={res.stdout}")
 
 print("Preview rendering complete!")
 

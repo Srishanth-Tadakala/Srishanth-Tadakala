@@ -2,7 +2,7 @@ import os
 import re
 
 def validate_readme(readme_path="README.md"):
-    print("=== Validating README.md ===")
+    print("=== Validating README.md (Project Marvel) ===")
     if not os.path.exists(readme_path):
         print(f"[FAIL] {readme_path} does not exist!")
         return 1
@@ -20,15 +20,15 @@ def validate_readme(readme_path="README.md"):
             errors += 1
 
     # 2. Extract and verify all local image paths
-    # Matches src="assets/..." and ![...](assets/...)
     img_patterns = [
-        r'src=["\'](assets/[^"\']+)["\']',
-        r'!\[[^\]]*\]\((assets/[^)]+)\)'
+        r'src=["\']([^"\']+\.(?:png|jpg|jpeg|svg|gif|webp))["\']',
+        r'!\[[^\]]*\]\(([^)]+\.(?:png|jpg|jpeg|svg|gif|webp))\)'
     ]
     referenced_assets = set()
     for pattern in img_patterns:
         for match in re.findall(pattern, content):
-            referenced_assets.add(match.split("?")[0])
+            if not match.startswith("http"):
+                referenced_assets.add(match.split("?")[0].replace("/", os.sep))
 
     print(f"\nVerifying {len(referenced_assets)} referenced local assets...")
     for asset in sorted(referenced_assets):
@@ -40,12 +40,9 @@ def validate_readme(readme_path="README.md"):
 
     # 3. Check for anchor links and targets
     anchor_hrefs = re.findall(r'href=["\']#([^"\']+)["\']', content)
-    # Target IDs and Markdown headings
     ids = set(re.findall(r'id=["\']([^"\']+)["\']', content))
-    # Also markdown headings: # Heading Name -> heading-name
     headings = re.findall(r'^#+\s+(.+)$', content, re.MULTILINE)
     for h in headings:
-        # standard github slugify
         slug = re.sub(r'[^\w\s-]', '', h).strip().lower()
         slug = re.sub(r'[-\s]+', '-', slug)
         ids.add(slug)
@@ -58,19 +55,18 @@ def validate_readme(readme_path="README.md"):
             print(f"[FAIL] Unresolved anchor link: #{anchor}")
             errors += 1
 
-    # 4. Check required sections
+    # 4. Check required Marvel sections
     required_sections = [
         "SRISHANTH TADAKALA",
-        "AI/ML ENGINEER",
-        "ABOUT ME",
-        "GITHUB STATS",
-        "TECH STACK",
-        "FEATURED PROJECTS",
+        "STARK INDUSTRIES",
+        "DOSSIER",
+        "TECHNOLOGY ARSENAL",
+        "PROJECT MULTIVERSE",
         "Sylvie",
         "QueueLess",
-        "ACHIEVEMENTS",
-        "CURRENTLY LEARNING",
-        "NOW PLAYING",
+        "A.R.C.A.N.E.",
+        "COMMAND CENTER",
+        "ACHIEVEMENT",
         "Build. Explore. Learn. Share. Evolve."
     ]
     print(f"\nVerifying required content sections...")
@@ -91,4 +87,3 @@ def validate_readme(readme_path="README.md"):
 
 if __name__ == "__main__":
     exit(validate_readme())
-
