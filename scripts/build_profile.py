@@ -597,19 +597,19 @@ def sweep(s: Svg, x, y, w, h, dur=6, op=.20, band=96):
 
 
 def svg_miss_minutes(s: Svg, cx: float, cy: float, scale: float = 1.0, wave_left: bool = False) -> str:
-    """SMIL-animated holographic Miss Minutes vector cameo (hovering, clock hands ticking, waving & blinking)."""
+    """SMIL-animated authentic Marvel TVA Orange Miss Minutes vector cameo (hovering, clock hands ticking, waving & blinking)."""
     gsm = s.glow_sm()
     fg, ag = s.uid("mf"), s.uid("ma")
     s.defs.append(
-        f'<radialGradient id="{fg}" cx="38%" cy="32%" r="68%">'
-        f'<stop offset="0" stop-color="#40FA9C"/><stop offset=".6" stop-color="#1CE882"/>'
-        f'<stop offset="1" stop-color="#0C9E56"/></radialGradient>'
-        f'<radialGradient id="{ag}"><stop offset="0" stop-color="{EMERALD}" stop-opacity=".42"/>'
-        f'<stop offset="1" stop-color="{EMERALD}" stop-opacity="0"/></radialGradient>'
+        f'<radialGradient id="{fg}" cx="36%" cy="30%" r="70%">'
+        f'<stop offset="0" stop-color="#FFB43A"/><stop offset=".55" stop-color="#FF8612"/>'
+        f'<stop offset="1" stop-color="#C84A04"/></radialGradient>'
+        f'<radialGradient id="{ag}"><stop offset="0" stop-color="#FF7600" stop-opacity=".46"/>'
+        f'<stop offset="1" stop-color="#FF7600" stop-opacity="0"/></radialGradient>'
     )
     ticks = "".join(
         f'<line x1="0" y1="{-15.2 if i % 3 == 0 else -16.0}" x2="0" y2="-18.2" '
-        f'stroke="#020B06" stroke-width="{1.6 if i % 3 == 0 else 1.0}" transform="rotate({i * 30})"/>'
+        f'stroke="#180902" stroke-width="{1.6 if i % 3 == 0 else 1.0}" transform="rotate({i * 30})"/>'
         for i in range(12)
     )
     ws = -1 if wave_left else 1
@@ -617,32 +617,36 @@ def svg_miss_minutes(s: Svg, cx: float, cy: float, scale: float = 1.0, wave_left
     wave_arm = (
         f'<g><animateTransform attributeName="transform" type="rotate" '
         f'values="{-14 * ws} {18 * ws} 2;{18 * ws} {18 * ws} 2;{-14 * ws} {18 * ws} 2" dur="1.35s" repeatCount="indefinite"/>'
-        f'<path d="M{18 * ws},2 Q{26 * ws},{-4} {28 * ws},{-14}" fill="none" stroke="{EMERALD}" stroke-width="3.6" stroke-linecap="round"/>'
-        f'<path d="M{18 * ws},2 Q{26 * ws},{-4} {28 * ws},{-14}" fill="none" stroke="#020B06" stroke-width="1.8" stroke-linecap="round"/>'
-        f'<circle cx="{28.5 * ws}" cy="-15.5" r="4.2" fill="#E8FFF4" stroke="#020B06" stroke-width="1.1"/>'
-        f'<circle cx="{26.0 * ws}" cy="-19.0" r="1.6" fill="#E8FFF4" stroke="#020B06" stroke-width=".8"/>'
-        f'<circle cx="{28.8 * ws}" cy="-19.8" r="1.6" fill="#E8FFF4" stroke="#020B06" stroke-width=".8"/>'
-        f'<circle cx="{31.4 * ws}" cy="-18.6" r="1.5" fill="#E8FFF4" stroke="#020B06" stroke-width=".8"/></g>'
+        f'<path d="M{18 * ws},2 Q{26 * ws},{-4} {28 * ws},{-14}" fill="none" stroke="#FFB236" stroke-width="3.6" stroke-linecap="round"/>'
+        f'<path d="M{18 * ws},2 Q{26 * ws},{-4} {28 * ws},{-14}" fill="none" stroke="#180902" stroke-width="2.1" stroke-linecap="round"/>'
+        f'<circle cx="{28.5 * ws}" cy="-15.5" r="4.2" fill="#FFF9EE" stroke="#180902" stroke-width="1.1"/>'
+        f'<circle cx="{26.0 * ws}" cy="-19.0" r="1.6" fill="#FFF9EE" stroke="#180902" stroke-width=".8"/>'
+        f'<circle cx="{28.8 * ws}" cy="-19.8" r="1.6" fill="#FFF9EE" stroke="#180902" stroke-width=".8"/>'
+        f'<circle cx="{31.4 * ws}" cy="-18.6" r="1.5" fill="#FFF9EE" stroke="#180902" stroke-width=".8"/></g>'
     )
     rest_arm = (
-        f'<path d="M{18 * rs},3 Q{25 * rs},9 {23 * rs},16" fill="none" stroke="{EMERALD}" stroke-width="3.4" stroke-linecap="round"/>'
-        f'<path d="M{18 * rs},3 Q{25 * rs},9 {23 * rs},16" fill="none" stroke="#020B06" stroke-width="1.7" stroke-linecap="round"/>'
-        f'<circle cx="{22.8 * rs}" cy="17.2" r="3.6" fill="#E8FFF4" stroke="#020B06" stroke-width="1.0"/>'
+        f'<path d="M{18 * rs},3 Q{25 * rs},9 {23 * rs},16" fill="none" stroke="#FFB236" stroke-width="3.4" stroke-linecap="round"/>'
+        f'<path d="M{18 * rs},3 Q{25 * rs},9 {23 * rs},16" fill="none" stroke="#180902" stroke-width="2.0" stroke-linecap="round"/>'
+        f'<circle cx="{22.8 * rs}" cy="17.2" r="3.6" fill="#FFF9EE" stroke="#180902" stroke-width="1.0"/>'
     )
     legs = (
-        f'<path d="M-7,18 Q-10,25 -8,31 M7,18 Q10,25 8,31" fill="none" stroke="{EMERALD}" stroke-width="3.4" stroke-linecap="round"/>'
-        f'<path d="M-7,18 Q-10,25 -8,31 M7,18 Q10,25 8,31" fill="none" stroke="#020B06" stroke-width="1.7" stroke-linecap="round"/>'
-        f'<ellipse cx="-9.5" cy="32.5" rx="5.2" ry="2.6" fill="#0B3820" stroke="{EMERALD}" stroke-width="1.1"/>'
-        f'<ellipse cx="9.5" cy="32.5" rx="5.2" ry="2.6" fill="#0B3820" stroke="{EMERALD}" stroke-width="1.1"/>'
+        f'<path d="M-7,18 Q-10,25 -8,31 M7,18 Q10,25 8,31" fill="none" stroke="#FFB236" stroke-width="3.4" stroke-linecap="round"/>'
+        f'<path d="M-7,18 Q-10,25 -8,31 M7,18 Q10,25 8,31" fill="none" stroke="#180902" stroke-width="2.0" stroke-linecap="round"/>'
+        f'<ellipse cx="-8.0" cy="30.6" rx="2.6" ry="1.3" fill="#FFF9EE" stroke="#180902" stroke-width=".8"/>'
+        f'<ellipse cx="8.0" cy="30.6" rx="2.6" ry="1.3" fill="#FFF9EE" stroke="#180902" stroke-width=".8"/>'
+        f'<ellipse cx="-9.8" cy="32.8" rx="5.2" ry="2.5" fill="#FF8612" stroke="#180902" stroke-width="1.0"/>'
+        f'<ellipse cx="9.8" cy="32.8" rx="5.2" ry="2.5" fill="#FF8612" stroke="#180902" stroke-width="1.0"/>'
     )
     eyes = ""
-    for ex in (-4.8, 4.8):
+    for eside, ex in ((-1, -4.8), (1, 4.8)):
         eyes += (
-            f'<ellipse cx="{ex}" cy="-3.6" rx="3.5" ry="5.5" fill="#E8FFF4" stroke="#020B06" stroke-width="1.1"/>'
-            f'<ellipse cx="{ex + 0.5 * ws}" cy="-3.3" rx="2.1" ry="3.5" fill="#020B06"/>'
-            f'<polygon points="{ex + 0.5 * ws},-3.4 {ex + 2.8},-5.6 {ex + 2.8},-3.1" fill="#E8FFF4"/>'
-            f'<path d="M{ex - 3.0},-10.4 Q{ex},-12.5 {ex + 3.0},-10.2" fill="none" stroke="#020B06" stroke-width="1.3" stroke-linecap="round"/>'
-            f'<ellipse cx="{ex}" cy="-3.6" rx="3.6" ry="5.6" fill="#1CE882" stroke="#020B06" stroke-width="1.0" opacity="0">'
+            f'<line x1="{ex + eside * 2.8:.1f}" y1="-7.6" x2="{ex + eside * 4.8:.1f}" y2="-9.4" stroke="#180902" stroke-width="1.1" stroke-linecap="round"/>'
+            f'<line x1="{ex + eside * 3.3:.1f}" y1="-5.8" x2="{ex + eside * 5.4:.1f}" y2="-7.1" stroke="#180902" stroke-width="1.0" stroke-linecap="round"/>'
+            f'<ellipse cx="{ex}" cy="-3.6" rx="3.5" ry="5.5" fill="#FFF9EE" stroke="#180902" stroke-width="1.1"/>'
+            f'<ellipse cx="{ex + 0.5 * ws}" cy="-3.3" rx="2.1" ry="3.5" fill="#180902"/>'
+            f'<polygon points="{ex + 0.5 * ws},-3.4 {ex + 2.8},-5.6 {ex + 2.8},-3.1" fill="#FFF9EE"/>'
+            f'<path d="M{ex - 3.0},-10.4 Q{ex},-12.5 {ex + 3.0},-10.2" fill="none" stroke="#180902" stroke-width="1.3" stroke-linecap="round"/>'
+            f'<ellipse cx="{ex}" cy="-3.6" rx="3.6" ry="5.6" fill="#FF8612" stroke="#180902" stroke-width="1.0" opacity="0">'
             f'<animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;.88;.91;.95;1" dur="3.8s" repeatCount="indefinite"/></ellipse>'
         )
     return (
@@ -650,15 +654,15 @@ def svg_miss_minutes(s: Svg, cx: float, cy: float, scale: float = 1.0, wave_left
         f'<g><animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="2.6s" repeatCount="indefinite"/>'
         f'<circle r="33" fill="url(#{ag})"/>'
         f'{legs}{rest_arm}'
-        f'<circle r="21" fill="#020B06" stroke="{EMERALD}" stroke-width="1.8" filter="url(#{gsm})"/>'
-        f'<circle r="19.2" fill="url(#{fg})" stroke="{MINT}" stroke-width=".9"/>'
+        f'<circle r="21" fill="#180902" stroke="#FFB236" stroke-width="1.8" filter="url(#{gsm})"/>'
+        f'<circle r="19.2" fill="url(#{fg})" stroke="#FFDA88" stroke-width=".9"/>'
         f'{ticks}'
-        f'<g opacity=".55"><g>{spin(18)}<line x1="0" y1="0" x2="0" y2="-9.5" stroke="#05381E" stroke-width="1.6" stroke-linecap="round"/></g>'
-        f'<g>{spin(4.5)}<line x1="0" y1="0" x2="0" y2="-13.8" stroke="#05381E" stroke-width="1.2" stroke-linecap="round"/></g></g>'
+        f'<g opacity=".65"><g>{spin(18)}<line x1="0" y1="0" x2="0" y2="-9.5" stroke="#2C1003" stroke-width="1.6" stroke-linecap="round"/></g>'
+        f'<g>{spin(4.5)}<line x1="0" y1="0" x2="0" y2="-13.8" stroke="#2C1003" stroke-width="1.2" stroke-linecap="round"/></g></g>'
         f'{eyes}'
-        f'<circle cx="0" cy="1.2" r="1.6" fill="#020B06"/>'
-        f'<path d="M-7.8,5.6 C-4.0,11.8 4.0,11.8 7.8,5.6" fill="none" stroke="#020B06" stroke-width="1.8" stroke-linecap="round"/>'
-        f'<path d="M-9.2,4.6 A2,2 0 0 0 -8.2,7.2 M9.2,4.6 A2,2 0 0 1 8.2,7.2" fill="none" stroke="#020B06" stroke-width="1.1"/>'
+        f'<circle cx="0" cy="1.2" r="1.6" fill="#180902"/>'
+        f'<path d="M-7.8,5.6 C-4.0,11.8 4.0,11.8 7.8,5.6" fill="none" stroke="#180902" stroke-width="1.8" stroke-linecap="round"/>'
+        f'<path d="M-9.2,4.6 A2,2 0 0 0 -8.2,7.2 M9.2,4.6 A2,2 0 0 1 8.2,7.2" fill="none" stroke="#180902" stroke-width="1.1"/>'
         f'{wave_arm}</g></g>'
     )
 

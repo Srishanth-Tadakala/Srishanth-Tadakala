@@ -1,9 +1,13 @@
 """TVA // EMERALD CONTINUUM — Autonomous Miss Minutes GIF Animation Engine.
 
 Procedurally rigs, animates, supersamples (2x SSAA), and optical-blooms 4 distinct
-story-driven Miss Minutes intelligence modules (desktop 840px + mobile 420px = 8 GIFs)
-in 100% cohesive Jet Black (#020403/#050907), Muted Moss Green (#162A1E/#254531/#588C69),
-and Neon Emerald Green (#00FF88/#88FFC8).
+story-driven Miss Minutes intelligence modules (desktop 840px + mobile 420px = 8 GIFs):
+  - Authentic Marvel Studios Loki (TVA) Tangerine-Amber Orange holographic Miss Minutes
+    (#FF8612 / #FFB236 clock dial, crisp #FFF9EE 4-fingered white cartoon gloves,
+    #180902 espresso-black rubber-hose limbs/ticks/pupils/eyelashes, #FF8612 cartoon boots,
+    and glowing TVA Amber-Orange 3D Timedoors)
+  - Seamlessly patrolling inside the profile's Jet Black (#020403/#050907), Muted Moss
+    Green (#162A1E/#254531/#588C69), and Neon Emerald Green (#00FF88/#88FFC8) HUD corridors.
 
 Modules generated in assets/tva/:
   1. miss-minutes-welcome(.gif / -mobile.gif)   — Timedoor arrival, wave, TemPad biometric scan, portal dive
@@ -39,6 +43,18 @@ EMERALD = (0, 255, 136)
 MINT = (136, 255, 200)
 WHITE_MINT = (232, 255, 244)
 INK = (2, 11, 6)
+
+# ─────────────── AUTHENTIC MARVEL TVA MISS MINUTES PALETTE ───────────────
+TVA_INK = (24, 9, 2)           # Deep warm espresso-black cartoon ink (ticks, pupils, limbs, lashes)
+TVA_DARK = (158, 56, 4)        # Deep burnt tangerine inner bezel & boot contour
+TVA_MID = (224, 98, 10)        # Rich TVA tangerine outer dial shading & Timedoor glass
+TVA_ORANGE = (255, 134, 18)    # Iconic Marvel Loki Miss Minutes vibrant clock-face orange
+TVA_GLOW = (255, 118, 0)       # Volumetric TVA orange hologram corona & optical bloom
+TVA_AMBER = (255, 178, 54)     # Luminous golden-amber dial sheen, outer rim & limb edge highlight
+TVA_GOLD = (255, 218, 136)     # Bright golden-cream Timedoor grid lines, sparks & catchlights
+TVA_WHITE = (255, 249, 238)    # Crisp warm cartoon white (4-fingered gloves, eye sclera, teeth)
+TVA_CUFF = (236, 210, 180)     # Subtle warm cream glove wrist cuff shading
+TVA_TONGUE = (242, 92, 42)     # Warm coral-orange cartoon tongue
 
 _FONT_CACHE: dict[tuple[str, int], ImageFont.FreeTypeFont] = {}
 
@@ -88,40 +104,72 @@ def _star_pts(cx: float, cy: float, r_out: float, r_in: float, n: int = 5, rot_d
 
 
 def _build_palettes() -> tuple[Image.Image, list[int]]:
-    """Deterministic 255-color emerald ramp (0..254) + slot 255 reserved for outer-corner transparency."""
+    """Deterministic 255-color dual-system ramp (Emerald HUD + Authentic TVA Orange Miss Minutes) + slot 255 corner alpha."""
     cols: list[tuple[int, int, int]] = []
-    # 1. Fine Jet Black -> dark moss obsidian (64 continuous steps for zero-band dark gradients)
-    for i in range(64):
-        t = i / 63.0
-        r = int(2 + t * 24)
-        g = int(4 + t * 56)
-        b = int(3 + t * 36)
+    # 1. Fine Jet Black -> dark moss obsidian (36 steps for zero-band HUD background & bezel)
+    for i in range(36):
+        t = i / 35.0
+        r = int(2 + t * 35)
+        g = int(4 + t * 65)
+        b = int(3 + t * 46)
         cols.append((r, max(g, r, b), b))
-    # 2. Muted moss -> luminous sage (64 steps)
-    for i in range(64):
-        t = i / 63.0
-        r = int(26 + t * 114)
-        g = int(60 + t * 144)
-        b = int(40 + t * 120)
+    # 2. Muted moss -> Neon Emerald #00FF88 -> Hyper-Mint #E8FFF4 (36 steps for HUD bezels, spline, consoles)
+    for i in range(18):
+        t = i / 17.0
+        r = int((1.0 - t) * 32)
+        g = int(72 + t * 183)
+        b = int(48 + t * 88)
         cols.append((r, max(g, r, b), b))
-    # 3. Deep emerald plasma -> pure Neon Emerald #00FF88 (64 steps)
-    for i in range(64):
-        t = i / 63.0
-        r = int((t**1.9) * 32)
-        g = int(44 + t * 211)
-        b = int(24 + t * 112)
-        cols.append((r, max(g, r, b), b))
-    # 4. Neon Emerald #00FF88 -> Hyper-Mint #88FFC8 -> Mint-White #F2FFF8 (63 steps -> 255 total)
-    for i in range(63):
-        t = i / 62.0
-        r = int(t * 246)
-        b = int(136 + t * 114)
+    for i in range(18):
+        t = i / 17.0
+        r = int(t * 236)
+        b = int(136 + t * 108)
         cols.append((r, 255, b))
+    # 3. TVA Espresso Ink + Orange-over-Dark-Moss Gaussian Bloom Falloff (48 steps)
+    for i in range(24):
+        t = i / 23.0
+        r = int(6 + t * 146)
+        g = int(11 + t * 50)
+        b = int(7 * (1.0 - t * 0.7))
+        cols.append((r, g, b))
+    for i in range(24):
+        t = i / 23.0
+        r = int(12 + t * 150)
+        g = int(4 + t * 54)
+        b = int(1 + t * 5)
+        cols.append((r, min(r, g), min(g, b)))
+    # 4. Rich TVA Burnt Tangerine -> Miss Minutes Vibrant Orange #FF8612 -> Golden Amber #FFB236 (64 steps)
+    for i in range(64):
+        t = i / 63.0
+        r = int(_lerp(164, 255, min(1.0, t * 1.45)))
+        g = int(_lerp(58, 178, t))
+        b = int(_lerp(4, 54, t**1.35))
+        cols.append((r, min(r, g), min(g, b)))
+    # 5. Golden Amber -> Warm Cream -> Crisp White Cartoon Gloves #FFF9EE / #FFFFFF (44 steps)
+    for i in range(44):
+        t = i / 43.0
+        r = 255
+        g = int(_lerp(180, 255, t))
+        b = int(_lerp(58, 255, t**1.15))
+        cols.append((r, g, min(g, b)))
+    # 6. Warm Coral Tongue (12 steps) + Warm Neutral Glove/Ink Anti-Aliasing Ramp (15 steps) -> 255 total
+    for i in range(12):
+        t = i / 11.0
+        r = int(_lerp(148, 252, t))
+        g = int(_lerp(42, 112, t))
+        b = int(_lerp(16, 56, t))
+        cols.append((r, g, b))
+    for i in range(15):
+        t = i / 14.0
+        v_r = int(_lerp(28, 240, t))
+        v_g = int(_lerp(22, 232, t))
+        v_b = int(_lerp(16, 220, t))
+        cols.append((v_r, v_g, v_b))
 
     quant_flat: list[int] = []
     final_flat: list[int] = []
     for r, g, b in cols[:255]:
-        c = (r, max(g, r, b), b)
+        c = (int(r), int(g), int(b))
         quant_flat.extend(c)
         final_flat.extend(c)
     # Slot 255: sentinel magenta during quantization so 0 interior pixels map to 255; VOID in final GIF palette
@@ -236,7 +284,7 @@ def draw_laser_bezel(dr: ImageDraw.ImageDraw, glow_dr: ImageDraw.ImageDraw, w: i
                 dr.line([p0, p1], fill=MINT, width=int(1.5 * S))
 
 
-# ─────────────── 3D TVA TIMEDOOR PORTAL RENDERER ───────────────
+# ─────────────── 3D TVA TIMEDOOR PORTAL RENDERER (AUTHENTIC TVA AMBER) ───────────────
 def draw_timedoor(
     canvas: Image.Image,
     glow: Image.Image,
@@ -247,7 +295,7 @@ def draw_timedoor(
     skew: float = 1.0,
     phase: float = 0.0,
 ):
-    """Draw a glowing 3D perspective TVA Timedoor rectangular holographic doorway."""
+    """Draw a glowing 3D perspective Marvel TVA Amber-Orange Timedoor rectangular doorway."""
     if open_amt <= 0.02:
         return
     dr = ImageDraw.Draw(canvas, "RGBA")
@@ -263,29 +311,29 @@ def draw_timedoor(
     bl = (cx - pw, cy + ph + sk * 0.4)
 
     cone = [tl, tr, (tr[0] + 16 * S * skew, br[1] + 5 * S), (bl[0] + 7 * S * skew, bl[1] + 5 * S)]
-    dr.polygon(cone, fill=(0, 255, 136, int(36 * open_amt)))
-    gdr.polygon([tl, tr, br, bl], fill=(0, 255, 136, int(145 * open_amt)))
+    dr.polygon(cone, fill=(255, 134, 18, int(42 * open_amt)))
+    gdr.polygon([tl, tr, br, bl], fill=(255, 118, 0, int(155 * open_amt)))
 
-    dr.polygon([tl, tr, br, bl], fill=(16, 175, 96, int(135 * open_amt)))
+    dr.polygon([tl, tr, br, bl], fill=(224, 98, 10, int(148 * open_amt)))
     for i in range(1, 5):
         f = i / 5.0
         dr.line([(tl[0], _lerp(tl[1], bl[1], f)), (tr[0], _lerp(tr[1], br[1], f))],
-                fill=(136, 255, 200, int(130 * open_amt)), width=max(1, S // 2))
+                fill=(255, 218, 136, int(145 * open_amt)), width=max(1, S // 2))
     for i in range(1, 3):
         f = i / 3.0
         dr.line([(_lerp(tl[0], tr[0], f), _lerp(tl[1], tr[1], f)),
                  (_lerp(bl[0], br[0], f), _lerp(bl[1], br[1], f))],
-                fill=(136, 255, 200, int(110 * open_amt)), width=max(1, S // 2))
+                fill=(255, 218, 136, int(125 * open_amt)), width=max(1, S // 2))
 
     sf = (phase * 2.3) % 1.0
     dr.line([(tl[0], _lerp(tl[1], bl[1], sf)), (tr[0], _lerp(tr[1], br[1], sf))],
-            fill=(232, 255, 244, int(210 * open_amt)), width=int(1.5 * S))
+            fill=(255, 249, 238, int(220 * open_amt)), width=int(1.5 * S))
 
-    gdr.line([tl, tr, br, bl, tl], fill=(0, 255, 136, 255), width=int(3.4 * S))
-    dr.line([tl, tr, br, bl, tl], fill=(220, 255, 238, 255), width=int(1.5 * S))
+    gdr.line([tl, tr, br, bl, tl], fill=(255, 126, 8, 255), width=int(3.4 * S))
+    dr.line([tl, tr, br, bl, tl], fill=(255, 236, 196, 255), width=int(1.5 * S))
 
 
-# ─────────────── STUDIO-GRADE MISS MINUTES PROCEDURAL RIG ───────────────
+# ─────────────── STUDIO-GRADE TVA MARVEL MISS MINUTES PROCEDURAL RIG ───────────────
 def _draw_glove(
     dr: ImageDraw.ImageDraw,
     gdr: ImageDraw.ImageDraw,
@@ -297,7 +345,7 @@ def _draw_glove(
     scale: float = 1.0,
 ):
     k = S * scale
-    gdr.ellipse([wx - 6.5 * k, wy - 6.5 * k, wx + 6.5 * k, wy + 6.5 * k], fill=(0, 255, 136, 115))
+    gdr.ellipse([wx - 6.5 * k, wy - 6.5 * k, wx + 6.5 * k, wy + 6.5 * k], fill=(255, 134, 18, 95))
 
     rad = math.radians(angle_deg)
     px = wx + math.cos(rad) * 4.4 * k
@@ -308,37 +356,37 @@ def _draw_glove(
             ang = math.radians(angle_deg + fa)
             fx = px + math.cos(ang) * fl * k
             fy = py + math.sin(ang) * fl * k
-            dr.line([(px, py), (fx, fy)], fill=INK, width=int(4.0 * k))
-            dr.ellipse([fx - 2.0 * k, fy - 2.0 * k, fx + 2.0 * k, fy + 2.0 * k], fill=INK)
-            dr.line([(px, py), (fx, fy)], fill=WHITE_MINT, width=int(2.5 * k))
-            dr.ellipse([fx - 1.25 * k, fy - 1.25 * k, fx + 1.25 * k, fy + 1.25 * k], fill=WHITE_MINT)
+            dr.line([(px, py), (fx, fy)], fill=TVA_INK, width=int(4.1 * k))
+            dr.ellipse([fx - 2.05 * k, fy - 2.05 * k, fx + 2.05 * k, fy + 2.05 * k], fill=TVA_INK)
+            dr.line([(px, py), (fx, fy)], fill=TVA_WHITE, width=int(2.6 * k))
+            dr.ellipse([fx - 1.3 * k, fy - 1.3 * k, fx + 1.3 * k, fy + 1.3 * k], fill=TVA_WHITE)
     elif pose == "point":
         ang = math.radians(angle_deg)
         fx = px + math.cos(ang) * 9.2 * k
         fy = py + math.sin(ang) * 9.2 * k
-        dr.line([(px, py), (fx, fy)], fill=INK, width=int(4.0 * k))
-        dr.ellipse([fx - 2.0 * k, fy - 2.0 * k, fx + 2.0 * k, fy + 2.0 * k], fill=INK)
-        dr.line([(px, py), (fx, fy)], fill=WHITE_MINT, width=int(2.5 * k))
-        dr.ellipse([fx - 1.3 * k, fy - 1.3 * k, fx + 1.3 * k, fy + 1.3 * k], fill=WHITE_MINT)
+        dr.line([(px, py), (fx, fy)], fill=TVA_INK, width=int(4.1 * k))
+        dr.ellipse([fx - 2.05 * k, fy - 2.05 * k, fx + 2.05 * k, fy + 2.05 * k], fill=TVA_INK)
+        dr.line([(px, py), (fx, fy)], fill=TVA_WHITE, width=int(2.6 * k))
+        dr.ellipse([fx - 1.35 * k, fy - 1.35 * k, fx + 1.35 * k, fy + 1.35 * k], fill=TVA_WHITE)
 
     r_p = 4.5 * k
-    dr.ellipse([px - r_p - 0.8 * k, py - r_p - 0.8 * k, px + r_p + 0.8 * k, py + r_p + 0.8 * k], fill=INK)
-    dr.ellipse([px - r_p, py - r_p, px + r_p, py + r_p], fill=WHITE_MINT)
+    dr.ellipse([px - r_p - 0.85 * k, py - r_p - 0.85 * k, px + r_p + 0.85 * k, py + r_p + 0.85 * k], fill=TVA_INK)
+    dr.ellipse([px - r_p, py - r_p, px + r_p, py + r_p], fill=TVA_WHITE)
 
     for sa in (-14, 10):
         a2 = math.radians(angle_deg + sa)
         dr.line(
             [(px + math.cos(a2) * 0.8 * k, py + math.sin(a2) * 0.8 * k),
              (px + math.cos(a2) * 3.0 * k, py + math.sin(a2) * 3.0 * k)],
-            fill=INK,
+            fill=TVA_INK,
             width=max(1, int(0.8 * k)),
         )
 
     c_perp = rad + math.pi / 2
     c0 = (wx - math.cos(c_perp) * 3.1 * k, wy - math.sin(c_perp) * 3.1 * k)
     c1 = (wx + math.cos(c_perp) * 3.1 * k, wy + math.sin(c_perp) * 3.1 * k)
-    dr.line([c0, c1], fill=INK, width=int(3.6 * k))
-    dr.line([c0, c1], fill=MINT, width=int(2.0 * k))
+    dr.line([c0, c1], fill=TVA_INK, width=int(3.7 * k))
+    dr.line([c0, c1], fill=TVA_CUFF, width=int(2.1 * k))
 
 
 def _draw_boot(
@@ -358,8 +406,8 @@ def _draw_boot(
     if contact > 0.05:
         rw = (8.5 + 7.5 * contact) * k
         rh = (2.2 + 1.6 * contact) * k
-        al = int(155 * (1.0 - 0.5 * contact))
-        gdr.ellipse([ax - rw, ay + 3 * k - rh, ax + rw, ay + 3 * k + rh], outline=(0, 255, 136, al), width=int(1.4 * k))
+        al = int(165 * (1.0 - 0.5 * contact))
+        gdr.ellipse([ax - rw, ay + 3 * k - rh, ax + rw, ay + 3 * k + rh], outline=(255, 134, 18, al), width=int(1.5 * k))
 
     local_boot = [
         (-3.5 * k * dir_s, -1.5 * k),
@@ -372,19 +420,19 @@ def _draw_boot(
         (-4.0 * k * dir_s, 4.5 * k),
     ]
     pts = [_rot(ax + dx, ay + dy, ax, ay, foot_deg) for dx, dy in local_boot]
-    gdr.polygon(pts, outline=(0, 255, 136, 170))
-    dr.polygon(pts, fill=(11, 56, 32), outline=EMERALD)
+    gdr.polygon(pts, outline=(255, 126, 8, 175))
+    dr.polygon(pts, fill=TVA_ORANGE, outline=TVA_INK)
     hx, hy = _rot(ax + 6.0 * k * dir_s, ay + 1.6 * k, ax, ay, foot_deg)
-    dr.ellipse([hx - 1.7 * k, hy - 1.0 * k, hx + 1.7 * k, hy + 1.0 * k], fill=MINT)
-    dr.ellipse([ax - 3.5 * k, ay - 2.9 * k, ax + 3.5 * k, ay - 0.2 * k], fill=EMERALD_MID, outline=MINT)
+    dr.ellipse([hx - 1.7 * k, hy - 1.0 * k, hx + 1.7 * k, hy + 1.0 * k], fill=TVA_GOLD)
+    dr.ellipse([ax - 3.6 * k, ay - 2.9 * k, ax + 3.6 * k, ay - 0.2 * k], fill=TVA_WHITE, outline=TVA_INK)
 
 
 def _draw_rubber_limb(dr, gdr, p0, p1, p2, p3, S: int, scale: float = 1.0):
     k = S * scale
     pts = _bezier(p0, p1, p2, p3, steps=16)
-    gdr.line(pts, fill=(0, 255, 136, 145), width=int(5.4 * k))
-    dr.line(pts, fill=EMERALD, width=int(3.6 * k), joint="curve")
-    dr.line(pts, fill=INK, width=int(1.9 * k), joint="curve")
+    gdr.line(pts, fill=(255, 118, 0, 130), width=int(5.4 * k))
+    dr.line(pts, fill=TVA_AMBER, width=int(3.7 * k), joint="curve")
+    dr.line(pts, fill=TVA_INK, width=int(2.2 * k), joint="curve")
 
 
 def draw_miss_minutes(
@@ -466,13 +514,13 @@ def draw_miss_minutes(
         if side == back_side:
             _render_arm(side, hspec)
 
-    # 2. Glowing Holographic Clock Body
-    gdr.ellipse([ox - rx * 1.18, oy - ry * 1.18, ox + rx * 1.18, oy + ry * 1.18], fill=(0, 255, 136, 125))
-    dr.ellipse([ox - rx * 1.07, oy - ry * 1.07, ox + rx * 1.07, oy + ry * 1.07], fill=INK, outline=EMERALD, width=int(2.2 * k))
-    dr.ellipse([ox - rx * 0.99, oy - ry * 0.99, ox + rx * 0.99, oy + ry * 0.99], fill=EMERALD_DARK, outline=MINT, width=int(1.3 * k))
-    dr.ellipse([ox - rx * 0.93, oy - ry * 0.93, ox + rx * 0.93, oy + ry * 0.93], fill=(14, 178, 96, 245))
-    dr.ellipse([ox - rx * 0.87 - rx * 0.04, oy - ry * 0.87 - ry * 0.05, ox + rx * 0.83, oy + ry * 0.81], fill=(28, 232, 130, 245))
-    dr.ellipse([ox - rx * 0.65 - rx * 0.08, oy - ry * 0.65 - ry * 0.10, ox + rx * 0.52, oy + ry * 0.45], fill=(64, 250, 156, 175))
+    # 2. Glowing Holographic TVA Tangerine-Orange Clock Body
+    gdr.ellipse([ox - rx * 1.18, oy - ry * 1.18, ox + rx * 1.18, oy + ry * 1.18], fill=(255, 118, 0, 145))
+    dr.ellipse([ox - rx * 1.07, oy - ry * 1.07, ox + rx * 1.07, oy + ry * 1.07], fill=TVA_INK, outline=TVA_AMBER, width=int(2.2 * k))
+    dr.ellipse([ox - rx * 0.99, oy - ry * 0.99, ox + rx * 0.99, oy + ry * 0.99], fill=TVA_DARK, outline=TVA_GOLD, width=int(1.2 * k))
+    dr.ellipse([ox - rx * 0.93, oy - ry * 0.93, ox + rx * 0.93, oy + ry * 0.93], fill=(218, 88, 8, 248))
+    dr.ellipse([ox - rx * 0.87 - rx * 0.04, oy - ry * 0.87 - ry * 0.05, ox + rx * 0.83, oy + ry * 0.81], fill=(255, 134, 18, 250))
+    dr.ellipse([ox - rx * 0.65 - rx * 0.08, oy - ry * 0.65 - ry * 0.10, ox + rx * 0.52, oy + ry * 0.45], fill=(255, 168, 48, 185))
 
     # 3. 12 Clock Hour Ticks + Minute Sub-Ticks + Rotating Dial Hands
     for i in range(60):
@@ -484,12 +532,12 @@ def draw_miss_minutes(
             r_out = 0.89
             dr.line(
                 [(ox + ca * rx * r_in, oy + sa * ry * r_in), (ox + ca * rx * r_out, oy + sa * ry * r_out)],
-                fill=INK,
+                fill=TVA_INK,
                 width=int((2.6 if cardinal else 1.7) * k),
             )
         else:
             px_d, py_d = ox + ca * rx * 0.85, oy + sa * ry * 0.85
-            dr.ellipse([px_d - 0.5 * k, py_d - 0.5 * k, px_d + 0.5 * k, py_d + 0.5 * k], fill=(6, 78, 42, 200))
+            dr.ellipse([px_d - 0.5 * k, py_d - 0.5 * k, px_d + 0.5 * k, py_d + 0.5 * k], fill=(116, 40, 4, 210))
 
     f_shift = facing * 0.11 * rx
     hub_x, hub_y = _rot(ox + f_shift * 0.45, oy + 0.03 * ry, ox, oy, tilt_clamped)
@@ -497,11 +545,11 @@ def draw_miss_minutes(
         ang = math.radians(h_deg + tilt_clamped - 90)
         dr.line(
             [(hub_x, hub_y), (hub_x + math.cos(ang) * rx * h_len, hub_y + math.sin(ang) * ry * h_len)],
-            fill=(6, 86, 46, 190),
+            fill=(56, 20, 4, 200),
             width=int(h_w * k),
         )
 
-    # 4. Pie-Cut Eyes, Eyebrows, Clock-Pin Nose & Smile
+    # 4. Pie-Cut Eyes, 1950s Eyelashes, Eyebrows, Clock-Pin Nose & Smile
     eye_y = oy - 0.17 * ry
     for eside in (-1.0, 1.0):
         ex, ey = _rot(ox + f_shift + eside * 0.23 * rx, eye_y, ox, oy, tilt_clamped)
@@ -516,41 +564,50 @@ def draw_miss_minutes(
         if is_wink or is_blink or is_proud:
             arc_box = [ex - ew, ey - eh * 0.45, ex + ew, ey + eh * 0.55]
             start_a, end_a = (195, 345) if (is_wink or is_proud) else (15, 165)
-            dr.arc(arc_box, start=start_a, end=end_a, fill=INK, width=int(2.4 * k))
+            dr.arc(arc_box, start=start_a, end=end_a, fill=TVA_INK, width=int(2.4 * k))
         else:
             eh_eff = eh * (0.52 if is_squint else 1.0)
-            dr.ellipse([ex - ew - 1.2 * k, ey - eh_eff - 1.2 * k, ex + ew + 1.2 * k, ey + eh_eff + 1.2 * k], fill=INK)
-            dr.ellipse([ex - ew, ey - eh_eff, ex + ew, ey + eh_eff], fill=WHITE_MINT)
+            # Signature 1950s Miss Minutes curved outer eyelashes
+            for l_idx, l_ang in enumerate((32, 54)):
+                la = math.radians((-l_ang if eside > 0 else 180 + l_ang))
+                lx0 = ex + math.cos(la) * ew * 0.92
+                ly0 = ey - abs(math.sin(la)) * eh_eff * 0.88
+                lx1 = lx0 + eside * (2.6 - l_idx * 0.5) * k
+                ly1 = ly0 - (2.1 + l_idx * 0.4) * k
+                dr.line([(lx0, ly0), (lx1, ly1)], fill=TVA_INK, width=max(1, int(1.35 * k)))
+
+            dr.ellipse([ex - ew - 1.2 * k, ey - eh_eff - 1.2 * k, ex + ew + 1.2 * k, ey + eh_eff + 1.2 * k], fill=TVA_INK)
+            dr.ellipse([ex - ew, ey - eh_eff, ex + ew, ey + eh_eff], fill=TVA_WHITE)
 
             px_p = ex + look[0] * ew * 0.36
             py_p = ey + look[1] * eh_eff * 0.32
             pw_p, ph_p = ew * 0.58, eh_eff * 0.64
-            dr.ellipse([px_p - pw_p, py_p - ph_p, px_p + pw_p, py_p + ph_p], fill=INK)
+            dr.ellipse([px_p - pw_p, py_p - ph_p, px_p + pw_p, py_p + ph_p], fill=TVA_INK)
             pie = [
                 (px_p + 0.05 * pw_p, py_p - 0.05 * ph_p),
                 (px_p + 1.15 * pw_p, py_p - 0.72 * ph_p),
                 (px_p + 1.15 * pw_p, py_p - 0.12 * ph_p),
             ]
-            dr.polygon(pie, fill=WHITE_MINT)
-            dr.ellipse([px_p - 0.52 * pw_p, py_p - 0.58 * ph_p, px_p - 0.16 * pw_p, py_p - 0.22 * ph_p], fill=WHITE_MINT)
+            dr.polygon(pie, fill=TVA_WHITE)
+            dr.ellipse([px_p - 0.52 * pw_p, py_p - 0.58 * ph_p, px_p - 0.16 * pw_p, py_p - 0.22 * ph_p], fill=TVA_WHITE)
 
         by_off = -eh - (3.8 if expr != "ooh" else 5.8) * k
         b_tilt = (-8 * eside) if expr == "detective" else (6 * eside if expr == "happy" else 0)
         bx0, by0 = _rot(ex - ew * 0.85, ey + by_off, ex, ey, b_tilt)
         bx1, by1 = _rot(ex, ey + by_off - 2.5 * k, ex, ey, b_tilt)
         bx2, by2 = _rot(ex + ew * 0.85, ey + by_off + 0.5 * k, ex, ey, b_tilt)
-        dr.line(_bezier((bx0, by0), (bx1, by1), (bx1, by1), (bx2, by2), 10), fill=INK, width=int(2.1 * k))
+        dr.line(_bezier((bx0, by0), (bx1, by1), (bx1, by1), (bx2, by2), 10), fill=TVA_INK, width=int(2.1 * k))
 
     nr = 2.3 * k
     nx, ny = _rot(ox + f_shift * 0.85, oy + 0.05 * ry, ox, oy, tilt_clamped)
-    dr.ellipse([nx - nr, ny - nr, nx + nr, ny + nr], fill=INK)
-    dr.ellipse([nx - nr * 0.45, ny - nr * 0.55, nx + nr * 0.25, ny + nr * 0.15], fill=MINT)
+    dr.ellipse([nx - nr, ny - nr, nx + nr, ny + nr], fill=TVA_INK)
+    dr.ellipse([nx - nr * 0.45, ny - nr * 0.55, nx + nr * 0.25, ny + nr * 0.15], fill=TVA_GOLD)
 
     mx, my = _rot(ox + f_shift * 0.9, oy + 0.30 * ry, ox, oy, tilt_clamped)
     mw = 0.40 * rx
     if mouth == "ooh":
-        dr.ellipse([mx - 0.14 * rx, my - 0.11 * ry, mx + 0.14 * rx, my + 0.17 * ry], fill=INK)
-        dr.ellipse([mx - 0.08 * rx, my + 0.04 * ry, mx + 0.08 * rx, my + 0.14 * ry], fill=EMERALD_FACE)
+        dr.ellipse([mx - 0.14 * rx, my - 0.11 * ry, mx + 0.14 * rx, my + 0.17 * ry], fill=TVA_INK)
+        dr.ellipse([mx - 0.08 * rx, my + 0.04 * ry, mx + 0.08 * rx, my + 0.14 * ry], fill=TVA_TONGUE)
     elif mouth == "open":
         m_pts = [
             (mx - mw, my - 0.04 * ry),
@@ -560,16 +617,16 @@ def draw_miss_minutes(
             (mx, my + 0.34 * ry),
             (mx - mw * 0.78, my + 0.25 * ry),
         ]
-        dr.polygon(m_pts, fill=INK)
+        dr.polygon(m_pts, fill=TVA_INK)
         t_pts = [
             (mx - mw * 0.82, my - 0.02 * ry),
             (mx + mw * 0.82, my - 0.02 * ry),
             (mx + mw * 0.72, my + 0.08 * ry),
             (mx - mw * 0.72, my + 0.08 * ry),
         ]
-        dr.polygon(t_pts, fill=WHITE_MINT)
-        dr.ellipse([mx - mw * 0.42, my + 0.14 * ry, mx + mw * 0.42, my + 0.31 * ry], fill=(56, 232, 146, 255))
-        dr.polygon(m_pts, outline=INK, width=int(2.0 * k))
+        dr.polygon(t_pts, fill=TVA_WHITE)
+        dr.ellipse([mx - mw * 0.42, my + 0.14 * ry, mx + mw * 0.42, my + 0.31 * ry], fill=TVA_TONGUE)
+        dr.polygon(m_pts, outline=TVA_INK, width=int(2.0 * k))
     else:
         s_pts = _bezier(
             (mx - mw, my - 0.04 * ry),
@@ -578,7 +635,7 @@ def draw_miss_minutes(
             (mx + mw, my - 0.04 * ry),
             16,
         )
-        dr.line(s_pts, fill=INK, width=int(2.5 * k), joint="curve")
+        dr.line(s_pts, fill=TVA_INK, width=int(2.5 * k), joint="curve")
 
     if mouth != "ooh":
         for dside in (-1.0, 1.0):
@@ -588,7 +645,7 @@ def draw_miss_minutes(
                 [dx_c - 2.6 * k, dy_c - 2.6 * k, dx_c + 2.6 * k, dy_c + 2.6 * k],
                 start=120 if dside < 0 else 300,
                 end=240 if dside < 0 else 420,
-                fill=INK,
+                fill=TVA_INK,
                 width=int(1.7 * k),
             )
 
@@ -601,42 +658,42 @@ def draw_miss_minutes(
     if prop == "tempad":
         tx_p, ty_p = front_wx + (7 * k if facing >= 0 else -17 * k), front_wy - 3 * k
         cone = [(tx_p + 5 * k, ty_p + 6 * k), (tx_p - 17 * k, ty_p + 38 * k), (tx_p + 27 * k, ty_p + 38 * k)]
-        dr.polygon(cone, fill=(0, 255, 136, 56))
-        gdr.polygon(cone, fill=(0, 255, 136, 95))
+        dr.polygon(cone, fill=(255, 134, 18, 58))
+        gdr.polygon(cone, fill=(255, 118, 0, 105))
         # Animated laser scan line inside cone
         sf = (scan_phase * 1.9) % 1.0
         ly_s = _lerp(ty_p + 8 * k, ty_p + 36 * k, sf)
         hw_s = _lerp(3 * k, 20 * k, sf)
-        dr.line([(tx_p + 5 * k - hw_s * 0.8, ly_s), (tx_p + 5 * k + hw_s * 1.0, ly_s)], fill=WHITE_MINT, width=int(1.5 * k))
-        dr.rounded_rectangle([tx_p, ty_p, tx_p + 11 * k, ty_p + 7.5 * k], radius=int(1.6 * k), fill=INK, outline=EMERALD, width=int(1.5 * k))
-        dr.rectangle([tx_p + 2 * k, ty_p + 2 * k, tx_p + 9 * k, ty_p + 5.5 * k], fill=MINT)
+        dr.line([(tx_p + 5 * k - hw_s * 0.8, ly_s), (tx_p + 5 * k + hw_s * 1.0, ly_s)], fill=TVA_WHITE, width=int(1.5 * k))
+        dr.rounded_rectangle([tx_p, ty_p, tx_p + 11 * k, ty_p + 7.5 * k], radius=int(1.6 * k), fill=TVA_INK, outline=TVA_AMBER, width=int(1.5 * k))
+        dr.rectangle([tx_p + 2 * k, ty_p + 2 * k, tx_p + 9 * k, ty_p + 5.5 * k], fill=TVA_GOLD)
     elif prop == "magnifier":
         dir_m = 1.0 if facing >= 0 else -1.0
         lx_m = front_wx + dir_m * 9.5 * k
         ly_m = front_wy - 9.5 * k
         lr_m = 10.5 * k
-        dr.line([(front_wx, front_wy), (lx_m - dir_m * lr_m * 0.65, ly_m + lr_m * 0.65)], fill=MINT, width=int(2.6 * k))
-        gdr.ellipse([lx_m - lr_m, ly_m - lr_m, lx_m + lr_m, ly_m + lr_m], outline=(0, 255, 136, 220), width=int(3.0 * k))
-        dr.ellipse([lx_m - lr_m, ly_m - lr_m, lx_m + lr_m, ly_m + lr_m], fill=(0, 255, 136, 48), outline=WHITE_MINT, width=int(2.0 * k))
-        dr.arc([lx_m - lr_m * 0.72, ly_m - lr_m * 0.72, lx_m + lr_m * 0.72, ly_m + lr_m * 0.72], 200, 265, fill=WHITE_MINT, width=int(1.5 * k))
+        dr.line([(front_wx, front_wy), (lx_m - dir_m * lr_m * 0.65, ly_m + lr_m * 0.65)], fill=TVA_GOLD, width=int(2.6 * k))
+        gdr.ellipse([lx_m - lr_m, ly_m - lr_m, lx_m + lr_m, ly_m + lr_m], outline=(255, 134, 18, 225), width=int(3.0 * k))
+        dr.ellipse([lx_m - lr_m, ly_m - lr_m, lx_m + lr_m, ly_m + lr_m], fill=(255, 134, 18, 48), outline=TVA_WHITE, width=int(2.0 * k))
+        dr.arc([lx_m - lr_m * 0.72, ly_m - lr_m * 0.72, lx_m + lr_m * 0.72, ly_m + lr_m * 0.72], 200, 265, fill=TVA_WHITE, width=int(1.5 * k))
 
     # Optional rigid full-sprite 360 cartwheel rotation (keeps eyes/mouth/limbs 100% locked together!)
     if abs(spin_deg) > 0.5:
         spr = spr.rotate(-spin_deg, resample=Image.Resampling.BICUBIC)
         sglow = sglow.rotate(-spin_deg, resample=Image.Resampling.BICUBIC)
 
-    # 6. Holographic CRT Scanline & Materialization Alpha Modulation
+    # 6. Warm TVA Holographic CRT Scanline & Materialization Alpha Modulation (preserves true orange/white hue!)
     px_s = spr.load()
     band_y = int(((scan_phase * 1.7) % 1.0) * ph)
     for yy in range(ph):
-        scan_mul = 0.89 if (yy // max(1, S)) % 2 == 0 else 1.0
-        boost = 26 if abs(yy - band_y) < 4 * S else 0
+        scan_mul = 0.92 if (yy // max(1, S)) % 2 == 0 else 1.0
+        boost = 22 if abs(yy - band_y) < 4 * S else 0
         for xx in range(pw):
             r, g, b, a = px_s[xx, yy]
             if a > 0:
-                ng = min(255, int(g * scan_mul) + boost)
-                nr = min(ng, int(r * scan_mul) + boost // 2)
-                nb = min(ng, int(b * scan_mul) + int(boost * 0.7))
+                nr = min(255, int(r * scan_mul) + boost)
+                ng = min(255, int(g * scan_mul) + int(boost * 0.68))
+                nb = min(255, int(b * scan_mul) + int(boost * 0.30))
                 px_s[xx, yy] = (nr, ng, nb, int(a * holo_alpha))
 
     if holo_alpha < 0.99:
@@ -665,14 +722,14 @@ def draw_speech_hud(
     progress: float = 1.0,
     verified_badge: bool = False,
 ):
-    """Draw a dedicated non-overlapping upper holographic TVA speech & telemetry bar (100% ASCII-safe glyphs)."""
+    """Draw Miss Minutes' TVA Amber-accented speech & telemetry bar inside the Emerald HUD corridor."""
     box = [x * S, y * S, (x + w) * S, (y + h) * S]
-    gdr.rounded_rectangle(box, radius=6 * S, outline=(0, 255, 136, 105), width=int(2.0 * S))
-    dr.rounded_rectangle(box, radius=6 * S, fill=(5, 18, 11, 232), outline=EMERALD, width=int(1.2 * S))
-    dr.rectangle([x * S, (y + 4) * S, (x + 3) * S, (y + h - 4) * S], fill=EMERALD)
+    gdr.rounded_rectangle(box, radius=6 * S, outline=(255, 134, 18, 95), width=int(2.0 * S))
+    dr.rounded_rectangle(box, radius=6 * S, fill=(7, 16, 11, 236), outline=TVA_AMBER, width=int(1.2 * S))
+    dr.rectangle([x * S, (y + 4) * S, (x + 3) * S, (y + h - 4) * S], fill=TVA_ORANGE)
 
     f_tag = _load_font("JetBrainsMono.ttf", int(7.8 * S))
-    dr.text(((x + 10) * S, (y + 4) * S), tag, font=f_tag, fill=MINT)
+    dr.text(((x + 10) * S, (y + 4) * S), tag, font=f_tag, fill=TVA_AMBER)
 
     # Auto-fit message font size so text NEVER overflows box width
     max_tw = (w - (36 if verified_badge else 18)) * S
@@ -685,14 +742,14 @@ def draw_speech_hud(
     n_chars = max(1, int(len(msg) * min(1.0, progress)))
     shown = msg[:n_chars]
     tx0, ty0 = (x + 10) * S, (y + 15) * S
-    dr.text((tx0, ty0), shown, font=f_msg, fill=WHITE_MINT)
+    dr.text((tx0, ty0), shown, font=f_msg, fill=TVA_WHITE)
 
-    # Crisp vector terminal block cursor (replaces missing Unicode '▌')
+    # Crisp vector terminal block cursor in TVA Orange
     if progress < 0.98:
         cur_x = tx0 + dr.textlength(shown, font=f_msg) + 2 * S
-        dr.rectangle([cur_x, ty0 + 2 * S, cur_x + 4 * S, ty0 + fs - 1 * S], fill=EMERALD)
+        dr.rectangle([cur_x, ty0 + 2 * S, cur_x + 4 * S, ty0 + fs - 1 * S], fill=TVA_ORANGE)
 
-    # Crisp vector checkmark badge (replaces missing Unicode '✓')
+    # Crisp vector checkmark badge in Emerald Continuum green when timeline verification locks!
     if verified_badge:
         vx, vy = (x + w - 16) * S, (y + h // 2) * S
         dr.ellipse([vx - 6 * S, vy - 6 * S, vx + 6 * S, vy + 6 * S], fill=(10, 68, 38), outline=EMERALD, width=S)
@@ -914,13 +971,13 @@ def build_scene_inspector(mobile: bool = False) -> str:
         gdr.ellipse([x_sylvie * S - 8 * S, sy_y - 8 * S, x_sylvie * S + 8 * S, sy_y + 8 * S], fill=(0, 255, 136, 170))
         dr.ellipse([x_sylvie * S - 4 * S, sy_y - 4 * S, x_sylvie * S + 4 * S, sy_y + 4 * S], fill=WHITE_MINT)
 
-        # Ceiling Timedoor at top-right (to the right of centered speech bar!) & Exit Timedoor at left
+        # Ceiling TVA Amber Timedoor at top-right & Exit Timedoor at left
         if u < 0.20:
             op = math.sin((u / 0.20) * math.pi)
             pw_c = int(24 * op * S)
             cy_ceil = (62 if mobile else 36) * S
-            gdr.rounded_rectangle([(x_start * S - pw_c), cy_ceil - 3 * S, (x_start * S + pw_c), cy_ceil + 3 * S], radius=3 * S, fill=(0, 255, 136, 220))
-            dr.rounded_rectangle([(x_start * S - pw_c), cy_ceil - 2 * S, (x_start * S + pw_c), cy_ceil + 2 * S], radius=2 * S, fill=WHITE_MINT)
+            gdr.rounded_rectangle([(x_start * S - pw_c), cy_ceil - 3 * S, (x_start * S + pw_c), cy_ceil + 3 * S], radius=3 * S, fill=(255, 126, 8, 225))
+            dr.rounded_rectangle([(x_start * S - pw_c), cy_ceil - 2 * S, (x_start * S + pw_c), cy_ceil + 2 * S], radius=2 * S, fill=TVA_WHITE)
         td_left = math.sin(((u - 0.80) / 0.20) * math.pi) if u > 0.80 else 0.0
         draw_timedoor(ov, gl, x_end * S, (floor_y - 31) * S, S, td_left, skew=1.0, phase=u)
 
@@ -961,12 +1018,12 @@ def build_scene_inspector(mobile: bool = False) -> str:
             rh = (1.32, -0.62, "wave")
             lf, rf = (-0.36, 1.58, 0, 0), (0.36, 1.58, 0, 0)
             v_badge = t > 0.45
-            # Orbiting discovery star-sparks around SYLVIE node
+            # Orbiting TVA Amber discovery star-sparks around SYLVIE node
             for si in range(4):
                 sa = math.radians(si * 90 + t * 360)
                 sx_p = x_sylvie * S + math.cos(sa) * 14 * S
                 sy_p = sy_y + math.sin(sa) * 10 * S
-                dr.polygon(_star_pts(sx_p, sy_p, 3.2 * S, 1.3 * S), fill=WHITE_MINT)
+                dr.polygon(_star_pts(sx_p, sy_p, 3.2 * S, 1.3 * S), fill=TVA_GOLD)
             tag = "NEXUS DISCOVERY // SYLVIE"
             txt = "OOH! SYLVIE AI MEMORY NEXUS!" if mobile else "OOH! SYLVIE LOCAL AI COMPANION — CONTEXTUAL MEMORY NEXUS!"
             mp = min(1.0, t * 1.6)
@@ -1097,17 +1154,17 @@ def build_scene_operator(mobile: bool = False) -> str:
             lh = (-1.36, 0.18 + ty_osc, "open")
             rh = (-0.95, 0.28 - ty_osc, "open")
             lf, rf = (-0.36, 1.58, 0, 0), (0.36, 1.58, 0, 0)
-            # Floating tilted holographic keyboard bar
+            # Floating tilted TVA Amber holographic keyboard bar + streaming code glyphs
             kb_x = (op_left - 28) * S
             kb_y = (floor_y - 28) * S
-            gdr.line([(kb_x - 10 * S, kb_y - 3 * S), (kb_x + 8 * S, kb_y + 4 * S)], fill=(0, 255, 136, 210), width=int(3 * S))
-            dr.line([(kb_x - 10 * S, kb_y - 3 * S), (kb_x + 8 * S, kb_y + 4 * S)], fill=WHITE_MINT, width=int(1.6 * S))
+            gdr.line([(kb_x - 10 * S, kb_y - 3 * S), (kb_x + 8 * S, kb_y + 4 * S)], fill=(255, 134, 18, 215), width=int(3 * S))
+            dr.line([(kb_x - 10 * S, kb_y - 3 * S), (kb_x + 8 * S, kb_y + 4 * S)], fill=TVA_WHITE, width=int(1.6 * S))
             for gx_off, g_ph, g_ch in glyph_seeds:
                 gy_t = (t * 2.2 + g_ph) % 1.0
                 gx_p = (term_x + gx_off) * S
                 gy_p = (floor_y - 42 - gy_t * 28) * S
                 al = int(235 * (1.0 - gy_t))
-                dr.text((gx_p, gy_p), g_ch, font=f_gl, fill=(136, 255, 200, al))
+                dr.text((gx_p, gy_p), g_ch, font=f_gl, fill=(255, 200, 96, al))
             tag = "TYPING // AUTO-SYNC ENGINE"
             txt = "CRUNCHING 400+ COMMITS @ 60FPS!" if mobile else "COMPILING LIVE TELEMETRY: PYTHON 63.5% // TYPESCRIPT 15.0%!"
             mp = min(1.0, 0.25 + t * 1.2)
@@ -1136,7 +1193,7 @@ def build_scene_operator(mobile: bool = False) -> str:
             lf, rf = (-0.38, 1.58, 0, 0), (0.38, 1.58, 0, 0)
             pr = int((12 + t * 24) * S)
             gdr.ellipse([gear_cx - pr, gear_cy - pr, gear_cx + pr, gear_cy + pr],
-                        outline=(0, 255, 136, int(215 * (1.0 - t * 0.5))), width=int(2.6 * S))
+                        outline=(255, 148, 28, int(215 * (1.0 - t * 0.5))), width=int(2.6 * S))
             v_badge = True
             tag = "TEMPORAL OUTPUT // 100%"
             txt = "ALL SYSTEMS PURRIN' Y'ALL!" if mobile else "TEMPORAL LOOM AT 100% — 15D PEAK STREAK // 42 MAX DAILY COMMITS!"
@@ -1147,8 +1204,8 @@ def build_scene_operator(mobile: bool = False) -> str:
             cy = _lerp(base_cy, (floor_y + 10) * S, t)
             holo_a = 1.0 - t
             pw_f = int(26 * math.sin(t * math.pi) * S)
-            gdr.ellipse([cx - pw_f, floor_y * S - 4 * S, cx + pw_f, floor_y * S + 4 * S], fill=(0, 255, 136, 230))
-            dr.ellipse([cx - pw_f, floor_y * S - 2 * S, cx + pw_f, floor_y * S + 2 * S], fill=WHITE_MINT)
+            gdr.ellipse([cx - pw_f, floor_y * S - 4 * S, cx + pw_f, floor_y * S + 4 * S], fill=(255, 126, 8, 230))
+            dr.ellipse([cx - pw_f, floor_y * S - 2 * S, cx + pw_f, floor_y * S + 2 * S], fill=TVA_WHITE)
             facing = 0.0
             expr, mouth = "wink", "smile"
             lh, rh = (-1.2, -0.5, "open"), (1.38, -0.68, "wave")
@@ -1248,9 +1305,9 @@ def build_scene_uplink(mobile: bool = False) -> str:
             tw = dr.textlength(blab, font=f_bc)
             dr.text((bx_t - tw / 2, by_t - 4.5 * S), blab, font=f_bc, fill=WHITE_MINT if active_b else MINT)
             if active_b:
-                # Glowing energy beam linking Miss Minutes to the active uplink channel below!
-                gdr.line([(cx, cy + R * 0.8), (bx_t, by_t - 6 * S)], fill=(0, 255, 136, int(145 * holo_a)), width=int(2.4 * S))
-                dr.line([(cx, cy + R * 0.8), (bx_t, by_t - 6 * S)], fill=(220, 255, 238, int(170 * holo_a)), width=S)
+                # Glowing TVA Amber-Orange energy beam linking Miss Minutes to the active uplink channel below!
+                gdr.line([(cx, cy + R * 0.8), (bx_t, by_t - 6 * S)], fill=(255, 134, 18, int(165 * holo_a)), width=int(2.5 * S))
+                dr.line([(cx, cy + R * 0.8), (bx_t, by_t - 6 * S)], fill=(255, 240, 206, int(185 * holo_a)), width=S)
 
         tag = "DISPATCH // FOR ALL TIME. ALWAYS."
         txt = "OPEN A TIMEDOOR BELOW Y'ALL!" if mobile else "OPEN A TIMEDOOR BELOW — SRISHANTH IS READY TO BUILD WITH Y'ALL!"

@@ -35,6 +35,19 @@ ACTIVE_SVG_DIRS = (
 )
 MAX_SINGLE_SVG_KB = 250.0
 MAX_TOTAL_SVG_KB = 2048.0
+MISS_MINUTES_CAMEO_SVGS = {
+    "assets/hero/hero.svg",
+    "assets/hero/hero-mobile.svg",
+    "assets/projects/sylvie.svg",
+}
+
+
+def _is_emerald_color(r: int, g: int, b: int) -> bool:
+    return g >= r and g >= b
+
+
+def _is_tva_miss_minutes_color(r: int, g: int, b: int) -> bool:
+    return r >= g >= b
 
 
 def validate_svgs() -> tuple[int, int, float]:
@@ -97,14 +110,23 @@ def validate_svgs() -> tuple[int, int, float]:
                 print(f"[FAIL] {rel}: external http(s) URL inside SVG (blocked by GitHub <img> sandbox)")
                 errors += 1
 
-            # Enforce 100% Jet Black / Muted Moss / Neon Emerald color purity (G >= R and G >= B for every hex color)
+            # Enforce Jet Black / Muted Moss / Neon Emerald color purity on HUD SVGs,
+            # plus sanctioned Marvel TVA Miss Minutes Amber-Orange/Cream/Ink tokens on cameo SVGs
             no_refs = re.sub(r"url\(#[^)]+\)", "", re.sub(r"base64,[A-Za-z0-9+/=]+", "", raw))
+            allow_tva = rel in MISS_MINUTES_CAMEO_SVGS
+            has_tva_orange = False
             for hx in re.findall(r"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b", no_refs):
                 full_hx = "".join(ch * 2 for ch in hx) if len(hx) == 3 else hx
                 r_c, g_c, b_c = int(full_hx[0:2], 16), int(full_hx[2:4], 16), int(full_hx[4:6], 16)
-                if not (g_c >= r_c and g_c >= b_c):
-                    print(f"[FAIL] {rel}: off-palette non-emerald/moss/black hex color #{hx} (R={r_c}, G={g_c}, B={b_c})")
+                if r_c >= 220 and 85 <= g_c <= 190 and b_c <= 65:
+                    has_tva_orange = True
+                ok = _is_emerald_color(r_c, g_c, b_c) or (allow_tva and _is_tva_miss_minutes_color(r_c, g_c, b_c))
+                if not ok:
+                    print(f"[FAIL] {rel}: off-palette hex color #{hx} (R={r_c}, G={g_c}, B={b_c})")
                     errors += 1
+            if allow_tva and not has_tva_orange:
+                print(f"[FAIL] {rel}: expected authentic TVA Orange Miss Minutes cameo tokens, found none")
+                errors += 1
 
             if kb > MAX_SINGLE_SVG_KB:
                 print(f"[FAIL] {rel}: {kb:.1f} KB exceeds single-SVG budget ({MAX_SINGLE_SVG_KB} KB)")
@@ -170,15 +192,21 @@ def validate_gifs() -> int:
                 if not anim or nf < 60:
                     print(f"[FAIL] assets/tva/{fn}: expected >=60 animated frames, got is_animated={anim}, n_frames={nf}")
                     errors += 1
-                # Verify 100% green-dominant Jet Black / Muted Moss / Neon Emerald color purity across sampled frames
+                # Verify Emerald HUD + Authentic TVA Orange Miss Minutes palette governance across sampled frames
+                has_tva_orange = False
                 for f_idx in (0, nf // 3, (2 * nf) // 3):
                     im.seek(f_idx)
                     rgb = im.convert("RGB")
                     for _cnt, (r_c, g_c, b_c) in (rgb.getcolors(maxcolors=65536) or []):
-                        if not (g_c >= r_c and g_c >= b_c):
+                        if r_c >= 220 and 85 <= g_c <= 190 and b_c <= 65:
+                            has_tva_orange = True
+                        if not (_is_emerald_color(r_c, g_c, b_c) or _is_tva_miss_minutes_color(r_c, g_c, b_c)):
                             print(f"[FAIL] assets/tva/{fn}: off-palette pixel ({r_c},{g_c},{b_c}) at frame {f_idx}")
                             errors += 1
                             break
+                if not has_tva_orange:
+                    print(f"[FAIL] assets/tva/{fn}: missing authentic TVA Orange Miss Minutes pixels")
+                    errors += 1
                 if kb > 1024.0:
                     print(f"[FAIL] assets/tva/{fn}: {kb:.1f} KB exceeds 1024 KB single-GIF budget")
                     errors += 1
