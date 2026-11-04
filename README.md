@@ -113,7 +113,7 @@
 <p align="center">
 <picture>
   <source media="(max-width: 600px)" srcset="assets/command/radar-mobile.svg">
-  <img src="assets/command/radar.svg" width="100%" alt="Contribution radar: 403 contributions and 37 active days in the last year (synced 2026-11-03).">
+  <img src="assets/command/radar.svg" width="100%" alt="Contribution radar: 403 contributions and 37 active days in the last year (synced 2026-11-04).">
 </picture>
 </p>
 
@@ -125,7 +125,7 @@
 </p>
 
 <p align="center">
-<img src="assets/command/telemetry.svg" width="415" alt="Telemetry: public repos 9, stars earned 10, followers 3, contrib · 12mo 403, languages 9, last push OCT 30 (synced 2026-11-03).">&nbsp;
+<img src="assets/command/telemetry.svg" width="415" alt="Telemetry: public repos 9, stars earned 10, followers 3, contrib · 12mo 403, languages 9, last push OCT 30 (synced 2026-11-04).">&nbsp;
 <img src="assets/command/streak.svg" width="415" alt="Streak reactor: current streak 6 days, longest streak 11 days, 37 active days in the last year, peak day 42 contributions on 2026-09-26.">
 </p>
 <p align="center">
@@ -224,7 +224,7 @@
 - **QUEUELESS** — Local-first virtual queue with adaptive waiting-time estimation and cross-tab sync. [Repository](https://github.com/Srishanth-Tadakala/QueueLess-)
 
 
-**GitHub (synced 2026-11-03):** 9 public repos · 10 stars · 403 contributions in the last year · longest streak 11 days
+**GitHub (synced 2026-11-04):** 9 public repos · 10 stars · 403 contributions in the last year · longest streak 11 days
 
 
 **Milestones**
