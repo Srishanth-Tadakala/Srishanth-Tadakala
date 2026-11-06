@@ -113,7 +113,7 @@
 <p align="center">
 <picture>
   <source media="(max-width: 600px)" srcset="assets/command/radar-mobile.svg">
-  <img src="assets/command/radar.svg" width="100%" alt="Contribution radar: 447 contributions and 38 active days in the last year (synced 2026-11-05).">
+  <img src="assets/command/radar.svg" width="100%" alt="Contribution radar: 453 contributions and 39 active days in the last year (synced 2026-11-06).">
 </picture>
 </p>
 
@@ -125,12 +125,12 @@
 </p>
 
 <p align="center">
-<img src="assets/command/telemetry.svg" width="415" alt="Telemetry: public repos 9, stars earned 10, followers 3, contrib · 12mo 447, languages 9, last push OCT 30 (synced 2026-11-05).">&nbsp;
-<img src="assets/command/streak.svg" width="415" alt="Streak reactor: current streak 7 days, longest streak 11 days, 38 active days in the last year, peak day 44 contributions on 2026-11-04.">
+<img src="assets/command/telemetry.svg" width="415" alt="Telemetry: public repos 10, stars earned 10, followers 3, contrib · 12mo 453, languages 9, last push NOV 05 (synced 2026-11-06).">&nbsp;
+<img src="assets/command/streak.svg" width="415" alt="Streak reactor: current streak 8 days, longest streak 11 days, 39 active days in the last year, peak day 44 contributions on 2026-11-04.">
 </p>
 <p align="center">
-<img src="assets/command/languages.svg" width="415" alt="Language spectrum by code volume: Python 63.5%, TypeScript 15.0%, JavaScript 14.6%, HTML 5.4%, CSS 1.2%, PLpgSQL 0.2%">&nbsp;
-<img src="assets/command/activity.svg" width="415" alt="Mission log, most recent pushes: QUEUELESS 2026-10-30; A.E.R.I.S. 2026-10-17; OMNIACTION AI 2026-10-08; F.R.I.D.A.Y. 2026-10-05; My Todo App 2026-09-21">
+<img src="assets/command/languages.svg" width="415" alt="Language spectrum by code volume: Python 59.1%, TypeScript 20.5%, JavaScript 13.7%, HTML 5.0%, CSS 1.1%, PLpgSQL 0.6%">&nbsp;
+<img src="assets/command/activity.svg" width="415" alt="Mission log, most recent pushes: DishNex 2026-11-05; QUEUELESS 2026-10-30; A.E.R.I.S. 2026-10-17; OMNIACTION AI 2026-10-08; F.R.I.D.A.Y. 2026-10-05">
 </p>
 
 <br>
@@ -146,7 +146,7 @@
 <p align="center">
 <picture>
   <source media="(max-width: 600px)" srcset="assets/archive/records-mobile.svg">
-  <img src="assets/archive/records.svg" width="100%" alt="Mission archive: Smart India Hackathon 2026 — Team F.R.I.D.A.Y. · PS SIH26060; Diploma CGPA 9.23 — Computer Science &amp; Engineering; Lateral Entry · B.Tech AI/ML — Marwadi University; Test-Driven Builds — 397+16 (F.R.I.D.A.Y.) · 115 (QueueLess); Open Source — 9 public repositories">
+  <img src="assets/archive/records.svg" width="100%" alt="Mission archive: Smart India Hackathon 2026 — Team F.R.I.D.A.Y. · PS SIH26060; Diploma CGPA 9.23 — Computer Science &amp; Engineering; Lateral Entry · B.Tech AI/ML — Marwadi University; Test-Driven Builds — 397+16 (F.R.I.D.A.Y.) · 115 (QueueLess); Open Source — 10 public repositories">
 </picture>
 </p>
 
@@ -224,7 +224,7 @@
 - **QUEUELESS** — Local-first virtual queue with adaptive waiting-time estimation and cross-tab sync. [Repository](https://github.com/Srishanth-Tadakala/QueueLess-)
 
 
-**GitHub (synced 2026-11-05):** 9 public repos · 10 stars · 447 contributions in the last year · longest streak 11 days
+**GitHub (synced 2026-11-06):** 10 public repos · 10 stars · 453 contributions in the last year · longest streak 11 days
 
 
 **Milestones**
@@ -233,7 +233,7 @@
 - Diploma CGPA 9.23 — Computer Science & Engineering
 - Lateral Entry · B.Tech AI/ML — Marwadi University
 - Test-Driven Builds — 397+16 (F.R.I.D.A.Y.) · 115 (QueueLess)
-- Open Source — 9 public repositories
+- Open Source — 10 public repositories
 
 
 **Contact:** [LinkedIn](https://linkedin.com/in/Srishanth-Tadakala) · [GitHub](https://github.com/Srishanth-Tadakala) · [Email](mailto:tadakalasrishanth@gmail.com) · [Instagram](https://instagram.com/multiverse___616) · [Facebook](https://facebook.com/siddu_tadakala)
